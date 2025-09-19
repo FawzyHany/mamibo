@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
 import { Rubik, Playfair_Display } from 'next/font/google';
-import "./globals.css";
+import "../globals.css";
 import {NextIntlClientProvider, hasLocale} from 'next-intl';
 import {notFound} from 'next/navigation';
-import {routing} from '@/i18n/routing';
+import {routing} from '../../i18n/routing';
+import {NavigationMenuDemo} from '../../components/NavBar/NavBar'
+import { getMessages } from 'next-intl/server';
+import {Footer} from '@/components/Footer/Footer'
+import ReactQueryProvider from "../provider/react-query-provider";
+
+
 
 const rubik = Rubik({
   subsets: ['latin'],
@@ -24,21 +30,28 @@ export const metadata: Metadata = {
 
 type Props = {
   children: React.ReactNode;
-  params: Promise<{locale: string}>;
+  params: { locale: string };
 };
 
+export default async function RootLayout({ children, params }: Props) {
+  const { locale } = params;
 
-export default async function RootLayout({children, params}: Props) {
-  const {locale} = await params;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
+  const messages = await getMessages({ locale });
+
   return (
-    <html lang="en">
-      <body
-        className={`${rubik.variable} ${playfairDisplay.variable} antialiased`}
-      >
-        {children}
+    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
+      <body className={`${rubik.variable} ${playfairDisplay.variable} antialiased`}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+        <ReactQueryProvider>
+          <NavigationMenuDemo />
+          {children}
+          <Footer/>
+          </ReactQueryProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

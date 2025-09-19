@@ -19,4 +19,165 @@ model User {
   email     String   @unique
   name      String?
   createdAt DateTime @default(now())
+  Cart      Cart[]
+  Order     Order[]
+}
+
+model Category {
+  id    String     @id @default(cuid())
+  name  String     @unique
+  items MenuItem[] // relation to MenuItem
+}
+
+model MenuItem {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  imageUrl    String?
+  categoryId  String
+  price       Decimal?
+  category    Category @relation(fields: [categoryId], references: [id])
+
+  CartItem  CartItem[]
+  OrderItem OrderItem[]
+}
+
+enum Size {
+  Small
+  Medium
+  Large
+}
+
+model MenuItemSize {
+  id         String  @id @default(cuid())
+  size       Size // Small, Medium, Large
+  multiplier Decimal
+
+  CartItem  CartItem[]
+  OrderItem OrderItem[]
+}
+
+enum Crust {
+  Regular
+  Stuffed
+}
+
+model MenuItemCrust {
+  id    String  @id @default(cuid())
+  crust Crust // Regular, Stuffed
+  price Decimal
+
+  CartItem  CartItem[]
+  OrderItem OrderItem[]
+}
+
+model Cart {
+  id        String  @id @default(cuid())
+  userId    String? @unique // null if guest
+  user      User?   @relation(fields: [userId], references: [id])
+  sessionId String? @unique // for guests with cookies
+
+  items CartItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CartItem {
+  id String @id @default(cuid())
+
+  cartId String
+  cart   Cart   @relation(fields: [cartId], references: [id])
+
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+
+  sizeOptionId String?
+  sizeOption   MenuItemSize? @relation(fields: [sizeOptionId], references: [id])
+
+  crustOptionId String?
+  crustOption   MenuItemCrust? @relation(fields: [crustOptionId], references: [id])
+
+  quantity  Int
+  unitPrice Decimal // computed snapshot of price for one unit
+  lineTotal Decimal // unitPrice * quantity
+
+  // Snapshots
+  itemNameSnapshot String
+  imageUrlSnapshot String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, menuItemId, sizeOptionId, crustOptionId])
+}
+
+model Order {
+  id     String  @id @default(cuid())
+  userId String? // signed-in user, or null if guest
+  user   User?   @relation(fields: [userId], references: [id])
+
+  sessionId String? // for guest checkouts
+
+  address   OrderAddress @relation(fields: [addressId], references: [id])
+  addressId String
+
+  items OrderItem[]
+
+  paymentType String // "card", "cod", "paypal"
+  paymentId   String? // e.g. Stripe intent ID
+  paid        Boolean @default(false)
+
+  status OrderStatus @default(PREPARING)
+
+  total Decimal // final total (including tax, etc.)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+
+  itemName String // snapshot at order time
+  imageUrl String?
+
+  quantity  Int
+  unitPrice Decimal // snapshot
+  lineTotal Decimal // snapshot
+
+  sizeOptionId    String?
+  crustOptionId   String?
+  MenuItemSize    MenuItemSize?  @relation(fields: [menuItemSizeId], references: [id])
+  menuItemSizeId  String?
+  MenuItemCrust   MenuItemCrust? @relation(fields: [menuItemCrustId], references: [id])
+  menuItemCrustId String?
+}
+
+model OrderAddress {
+  id        String  @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String?
+  phone     String
+  address   String
+  building  String
+  floor     String?
+  flat      String?
+  landmark  String?
+  lat       Float
+  lng       Float
+  Order     Order[]
+}
+
+enum OrderStatus {
+  PREPARING
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
 }

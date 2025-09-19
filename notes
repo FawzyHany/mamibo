@@ -1,0 +1,12 @@
+//use after each update in schema-prisma
+// npx prisma migrate dev --name fix-itemid-type 
+
+//auto-format your schema
+// npx prisma format
+
+// To intialize new prisma setup
+//npx prisma generate
+
+// npx prisma studio
+
+// npm install --save-dev @types/js-cookie

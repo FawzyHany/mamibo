@@ -1,5 +1,9 @@
 {
-  "HomePage": {
-    "title": "Hello world!"
+  "navbar": {
+    "home": "Home",
+    "service": "Service",
+    "aboutUs": "About Us",
+    "menu": "Menu",
+    "account": "Account"
   }
 }
