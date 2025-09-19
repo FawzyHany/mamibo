@@ -32,9 +32,9 @@ import { AppBreadcrumb } from "@/components/Breadcrumb/Breadcrumb"
             id={item.id}
             title={item.name}
             description={item.description ?? ""}
-            price={item.price ?? 0}
+            price={item.price ? Number(item.price) : 0}
             imageUrl={item.imageUrl ?? "/images/placeholder.jpg"}
-            href={`/menu/desserts/${slugify(item.name)}`} // dynamic product page
+            href={`/menu/beverages/${slugify(item.name)}`} // dynamic product page
           />
         ))}
       </div>

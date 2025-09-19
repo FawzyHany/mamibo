@@ -14,20 +14,6 @@ export default async function PizzaDetailPage({ params }: { params: { slug: stri
     },
   });
 
-  const sizes = await prisma.menuItemSize.findMany({
-    select: {
-      id: true,
-      size: true,
-    },
-  });
-  
-  const crusts = await prisma.menuItemCrust.findMany({
-    select: {
-      id: true,
-      crust: true,
-    },
-  });
-
 
   if (!product) return notFound()
 
@@ -39,8 +25,6 @@ export default async function PizzaDetailPage({ params }: { params: { slug: stri
         title={product.name}
         description={product.description ?? ""}
         price={product.price ? Number(product.price) : 0}
-        sizeOptions={sizes} // placeholder, later from DB
-        crustOptions={crusts} // placeholder, later from DB
       />
     </div>
   )

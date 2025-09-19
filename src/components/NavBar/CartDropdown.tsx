@@ -33,7 +33,6 @@ export function CartDropdown() {
   const removeItem = useRemoveCartItem(); // no cartId needed
   const updateItem = useUpdateCartItem();
   const isTouchDevice = useIsTouchDevice();
-  console.log("🛒 Cart data:", cart);
   // Total quantity for badge
   const totalQty =
     cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0;

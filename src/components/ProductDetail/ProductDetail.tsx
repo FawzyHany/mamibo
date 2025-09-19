@@ -5,31 +5,56 @@ import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
+import { useAddCartItem } from "@/hooks/useAddCartItem";
 
-type ProductDetailProps ={
-  imageUrl: string
-  title: string
-  description: string
-  price: number
-  sizes?: string[] // e.g. ["Small", "Medium", "Large"]
-  crusts?: string[] // e.g. ["Regular", "Stuffed"]
-}
 
+type ProductDetailProps = {
+  productId: string;
+  imageUrl: string;
+  title: string;
+  description: string;
+  price: number;
+  sizeOptions?: { id: string; size: string }[];    // optional
+  crustOptions?: { id: string; crust: string }[];  // Includes ID
+};
 export function ProductDetail({
+  productId,
   imageUrl,
   title,
   description,
   price,
-  sizes = [],
-  crusts = [],
+  sizeOptions = [],
+  crustOptions = [],
 }: ProductDetailProps) {
-  const [selectedSize, setSelectedSize] = useState(sizes[0] ?? "")
-  const [selectedCrust, setSelectedCrust] = useState(crusts[0] ?? "")
-  const [quantity, setQuantity] = useState(1)
-  console.log("Image URL:", imageUrl)
+  const [selectedSizeId, setSelectedSizeId] = useState<string | null>(null);
+  const [selectedCrustId, setSelectedCrustId] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState<number>(1);
+
+  const addToCart = useAddCartItem();
+
+  const handleAddToCart = () => {
+    addToCart.mutate({
+      menuItemId: productId,
+      sizeOptionId: selectedSizeId ?? null,
+      crustOptionId: selectedCrustId ?? null,
+      quantity,
+    });
+  };
+
+  const handleAddToCartPizza = () => {
+    if (!selectedSizeId || !selectedCrustId) {
+      alert("Please select size and crust.");
+      return;
+    }
+
+    addToCart.mutate({
+      menuItemId: productId,
+      sizeOptionId: selectedSizeId,
+      crustOptionId: selectedCrustId,
+      quantity,
+    });
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       {/* LEFT SIDE - IMAGE */}
@@ -56,60 +81,85 @@ export function ProductDetail({
           {/* Price */}
           <div className="text-xl font-semibold">Price: ${price.toFixed(2)}</div>
 
-          {/* Size Options */}
-          {sizes.length > 0 && (
-            <div>
-              <h2 className="font-medium mb-2">Choose Size</h2>
-              <RadioGroup
-                value={selectedSize}
-                onValueChange={setSelectedSize}
-                className="flex gap-4"
-              >
-                {sizes.map((size) => (
-                  <div key={size} className="flex items-center space-x-2">
-                    <RadioGroupItem value={size} id={size} />
-                    <Label htmlFor={size}>{size}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-          )}
-
-          {/* Crust Options */}
-          {crusts.length > 0 && (
-            <div>
-              <h2 className="font-medium mb-2">Choose Crust</h2>
-              <RadioGroup
-                value={selectedCrust}
-                onValueChange={setSelectedCrust}
-                className="flex gap-4"
-              >
-                {crusts.map((crust) => (
-                  <div key={crust} className="flex items-center space-x-2">
-                    <RadioGroupItem value={crust} id={crust} />
-                    <Label htmlFor={crust}>{crust}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-          )}
-
-          {/* Quantity */}
+          {/* Size selector (optional) */}
+        {sizeOptions.length > 0 && (
           <div>
-            <h2 className="font-medium mb-2">Quantity</h2>
-            <Input
-              type="number"
-              min={1}
-              value={quantity}
-              onChange={(e) => setQuantity(Number(e.target.value))}
-              className="w-24"
-            />
+            <label className="block mb-1">Select Size</label>
+            <select
+              value={selectedSizeId ?? ""}
+              onChange={(e) =>
+                setSelectedSizeId(e.target.value || null)
+              }
+              className="w-full border rounded px-3 py-2"
+            >
+              <option value="">Select size</option>
+              {sizeOptions.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.size}
+                </option>
+              ))}
+            </select>
           </div>
+        )}
 
-          {/* Add to Cart */}
-          <Button className="w-full">Add to Cart</Button>
-        </CardContent>
+        {/* Crust selector (optional) */}
+        {crustOptions.length > 0 && (
+          <div>
+            <label className="block mb-1">Select Crust</label>
+            <select
+              value={selectedCrustId ?? ""}
+              onChange={(e) =>
+                setSelectedCrustId(e.target.value || null)
+              }
+              className="w-full border rounded px-3 py-2"
+            >
+              <option value="">Select crust</option>
+              {crustOptions.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.crust}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+
+      <div className="flex items-center gap-2 border border-gray-300 rounded-md w-fit">
+  <button
+    type="button"
+    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+    className="px-3 py-1 text-lg font-bold hover:bg-gray-100"
+  >
+    −
+  </button>
+  <span className="w-8 text-center">{quantity}</span>
+  <button
+    type="button"
+    onClick={() => setQuantity((q) => q + 1)}
+    className="px-3 py-1 text-lg font-bold hover:bg-gray-100"
+  >
+    +
+  </button>
+</div>
+
+{(sizeOptions.length > 0 || crustOptions.length > 0)?<Button
+        onClick={handleAddToCartPizza}
+        disabled={addToCart.isPending}
+        className="w-full"
+      >
+        {addToCart.isPending ? "Adding..." : "Add to Cart"}
+      </Button>:<Button
+        onClick={handleAddToCart}
+        disabled={addToCart.isPending}
+        className="w-full"
+      >
+        {addToCart.isPending ? "Adding..." : "Add to Cart"}
+      </Button>}
+      
+      </CardContent>
       </Card>
     </div>
   )
 }
+
+
