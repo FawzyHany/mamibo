@@ -15,8 +15,8 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 const checkoutSchema = z.object({
   firstName: z.string().min(1, "First name required"),
   lastName: z.string().min(1, "Last name required"),
-  phone: z.string().min(1, "Phone required"),
-  email: z.string().email().optional(),
+  phone: z.string().min(10, "Phone required"),
+  email: z.string().optional(),
   address: z.string().min(1, "Address required"),
   building: z.string().optional(),
   floor: z.string().optional(),
