@@ -10,24 +10,35 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
+import LocationPicker from "@/components/DeliveryMap/LocationPicker";
+import { toast } from "sonner"
+import { useCart } from "@/hooks/useCart";
+import { useCheckout } from "@/hooks/useCheckout";
+import { useReverseGeocoding } from "@/hooks/reverseGeocoding";
+
 
 // 1. Validation schema (Zod)
 const checkoutSchema = z.object({
-  firstName: z.string().min(1, "First name required"),
-  lastName: z.string().min(1, "Last name required"),
-  phone: z.string().min(10, "Phone required"),
-  email: z.string().optional(),
-  address: z.string().min(1, "Address required"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  phone: z.string().min(1, "Phone is required"),
+  email: z.string().email("Invalid email"),
+  address: z.string().min(1, "Address is required"),
   building: z.string().optional(),
   floor: z.string().optional(),
   flat: z.string().optional(),
   landmark: z.string().optional(),
   paymentType: z.enum(["cod", "card"]),
-})
+  lat: z.number().optional(),
+  lng: z.number().optional(),
+});
 
 type CheckoutFormValues = z.infer<typeof checkoutSchema>
 
 export default function CheckoutPage() {
+
+  const { data: cart, isLoading } = useCart();
+  const checkoutMutation = useCheckout();
   // 2. Init form
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
@@ -42,14 +53,64 @@ export default function CheckoutPage() {
       flat: "",
       landmark: "",
       paymentType: "cod",
+      lat: undefined,
+      lng: undefined,
     },
-  })
+  });
+
+
 
   const onSubmit = (values: CheckoutFormValues) => {
-    console.log("Submit:", values)
-    // Later → call useCheckoutMutation(values)
-  }
+    if (!cart || cart.items.length === 0) {
+      toast.success("Cart is empty");
+      toast.success("Please add some items before checking out.");
+      toast.success("destructive");
+      return;
+    }
 
+    checkoutMutation.mutate(
+      {
+        cartId: cart.id,
+        address: {
+          firstName: values.firstName,
+          lastName: values.lastName,
+          phone: values.phone,
+          email: values.email,
+          address: values.address,
+          building: values.building || "",
+          floor: values.floor,
+          flat: values.flat,
+          landmark: values.landmark,
+          lat: values.lat ?? 0,
+          lng: values.lng ?? 0,
+        },
+        paymentType: values.paymentType,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Order placed");
+          toast.success("Thank you for your order!");
+        
+        },
+        onError: () => {
+          toast.error("Checkout failed");
+          toast.error("Please try again.");
+          toast.error("destructive");
+          
+        },
+      }
+    );
+  };
+
+  const lat = form.watch("lat");
+  const lng = form.watch("lng");
+  
+  const { address, loading: addressLoading } = useReverseGeocoding(
+    lat ?? null,
+    lng ?? null
+  );
+
+  if (isLoading) return <p>Loading cart...</p>;
   return (
     <div className="container mx-auto py-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
       
@@ -117,6 +178,29 @@ export default function CheckoutPage() {
                   )}
                 />
               </div>
+
+
+              <div>
+  <FormLabel>Delivery Location</FormLabel>
+  <LocationPicker
+    onConfirm={(lat, lng) => {
+      form.setValue("lat", lat);
+      form.setValue("lng", lng);
+    }}
+  />
+  {lat && lng && (
+    <p className="text-xs text-gray-500 mt-1">
+      {addressLoading ? (
+        "📍 Detecting address..."
+      ) : (
+        <>
+          📍 <span className="text-md">{address}</span>
+        </>
+      )}
+    </p>
+  )}
+</div>
+
 
               {/* Delivery Info */}
               <div className="space-y-4">
@@ -222,48 +306,66 @@ export default function CheckoutPage() {
               </div>
 
               {/* Submit */}
-              <Button type="submit" className="w-full">
-                Confirm Order
-              </Button>
+              <Button
+  type="submit"
+  className="w-full"
+  disabled={checkoutMutation.status === "pending"}
+>
+  {checkoutMutation.status === "pending" ? "Placing order..." : "Place Order"}
+</Button>
             </form>
           </Form>
         </CardContent>
       </Card>
 
-      {/* RIGHT COLUMN: Order Summary */}
+      {/* Right Column - Order Summary */}
       <Card>
         <CardHeader>
           <CardTitle>Order Summary</CardTitle>
         </CardHeader>
         <CardContent>
-          {/* Later: Map over cart items */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <div className="h-16 w-16 bg-gray-200 rounded-md" />
-              <div className="flex-1">
-                <p className="font-medium">Pizza Margherita</p>
-                <p className="text-sm text-muted-foreground">Large, Thin Crust</p>
-              </div>
-              <div className="font-medium">2 × $10</div>
-            </div>
+          {cart?.items.length ? (
+            <div className="space-y-4">
+              {cart.items.map((item) => (
+                <div key={item.id} className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{item.itemNameSnapshot}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {item.sizeOption?.size ?? "Unknown size"} •{" "}
+                      {item.crustOption?.crust ?? "Unknown crust"}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p>
+                      {item.quantity} × ${item.unitPrice.toFixed(2)}
+                    </p>
+                    <p className="font-semibold">
+                      ${item.lineTotal.toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              ))}
 
-            <div className="space-y-2 border-t pt-4">
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>$20.00</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Tax</span>
-                <span>$2.00</span>
-              </div>
-              <div className="flex justify-between font-semibold">
-                <span>Total</span>
-                <span>$22.00</span>
+              <div className="border-t pt-4 space-y-2">
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>${cart.subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Tax</span>
+                  <span>${cart.tax.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between font-bold">
+                  <span>Total</span>
+                  <span>${cart.total.toFixed(2)}</span>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <p>Your cart is empty.</p>
+          )}
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

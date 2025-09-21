@@ -1,5 +1,16 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "leaflet/dist/leaflet.css";
+
+
+
+.leaflet-control-attribution {
+  font-size: 10px;
+  opacity: 0.6;
+  bottom: 0;
+  right:0;
+}
+
 
 html {
   scroll-behavior: smooth;

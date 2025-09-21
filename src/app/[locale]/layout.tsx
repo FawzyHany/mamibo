@@ -8,6 +8,7 @@ import {NavigationMenuDemo} from '../../components/NavBar/NavBar'
 import { getMessages } from 'next-intl/server';
 import {Footer} from '@/components/Footer/Footer'
 import ReactQueryProvider from "../provider/react-query-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 
 
@@ -49,6 +50,7 @@ export default async function RootLayout({ children, params }: Props) {
         <ReactQueryProvider>
           <NavigationMenuDemo />
           {children}
+          <Toaster />
           <Footer/>
           </ReactQueryProvider>
         </NextIntlClientProvider>
