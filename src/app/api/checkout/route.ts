@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-import { PaymentType } from "@prisma/client";
+import { PaymentType } from "@/generated/prisma";
 
 // Zod schema for checkout POST body
 export const checkoutSchema = z.object({

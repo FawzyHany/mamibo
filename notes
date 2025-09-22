@@ -16,3 +16,12 @@
 // git commit -m "Initial commit"
 // git branch -M main
 // git push -u origin main
+
+// rm -rf .next
+// rm -rf node_modules
+// rm -rf src/generated/prisma
+// rm -f package-lock.json
+
+// npm install
+// npx prisma generate
+// npm run dev

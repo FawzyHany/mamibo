@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  // output   = "../src/generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -15,12 +15,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  Cart      Cart[]
-  Order     Order[]
+  id          String        @id @default(cuid())
+  email       String        @unique
+  firstName   String
+  lastName    String? // optional
+  password    String
+  createdAt   DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  Cart        Cart[]
+  Order       Order[]
+  UserAddress UserAddress[]
 }
 
 model Category {
@@ -131,7 +135,7 @@ model Order {
 
   paymentType PaymentType // "card", "cod", "paypal"
   paymentId   String? // e.g. Stripe intent ID
-  paid        Boolean @default(false)
+  paid        Boolean     @default(false)
 
   status OrderStatus @default(PREPARING)
 
@@ -185,4 +189,31 @@ enum OrderStatus {
   OUT_FOR_DELIVERY
   DELIVERED
   CANCELLED
+}
+
+model UserAddress {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  // Contact info
+  firstName String
+  lastName  String
+  phone     String
+
+  // Address info
+  address  String
+  building String?
+  floor    String?
+  flat     String?
+  landmark String?
+
+  // Location
+  lat Float
+  lng Float
+
+  // Meta
+  isDefault Boolean  @default(false) // one default address per user
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
