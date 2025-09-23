@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import bcrypt from 'bcryptjs';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export const userSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -51,5 +53,64 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
+
+// GET /api/user/profile
+export async function GET() {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+    },
+  });
+
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(user);
+}
+
+// PATCH /api/user/profile
+export async function PATCH(req: Request) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const body = await req.json();
+  const { firstName, lastName, email } = body;
+
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { email: session.user.email },
+      data: {
+        firstName,
+        lastName,
+        email,
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+      },
+    });
+
+    return NextResponse.json(updatedUser);
+  } catch (err) {
+    return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
   }
 }
