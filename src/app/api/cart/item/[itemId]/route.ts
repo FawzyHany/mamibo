@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getOrCreateSessionId } from "@/lib/session";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 
 type UpdateCartItemRequest = {
@@ -12,6 +14,7 @@ export async function PATCH(
   { params }: { params: { itemId: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions);
     const { itemId } = params;
     const body: UpdateCartItemRequest = await req.json();
     const { quantity } = body;
@@ -20,14 +23,34 @@ export async function PATCH(
       return NextResponse.json({ error: "Quantity is required" }, { status: 400 });
     }
 
-    const sessionId =await getOrCreateSessionId();
+    let userId: string | null = null;
+    let sessionId: string | null = null;
+
+    if (session?.user?.email) {
+      const user = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        select: { id: true },
+      });
+
+      if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+
+      userId = user.id;
+    } else {
+      sessionId = await getOrCreateSessionId();
+    }
 
     const cartItem = await prisma.cartItem.findUnique({
       where: { id: itemId },
       include: { cart: true },
     });
 
-    if (!cartItem || cartItem.cart.sessionId !== sessionId) {
+    const isOwner =
+      (userId && cartItem?.cart?.userId === userId) ||
+      (sessionId && cartItem?.cart?.sessionId === sessionId);
+
+    if (!cartItem || !isOwner) {
       return NextResponse.json({ error: "Cart item not found or unauthorized" }, { status: 403 });
     }
 
@@ -54,20 +77,44 @@ export async function PATCH(
 
 
 
+
+
 export async function DELETE(
   req: Request,
   { params }: { params: { itemId: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions);
     const { itemId } = params;
-    const sessionId =await getOrCreateSessionId();
+
+    let userId: string | null = null;
+    let sessionId: string | null = null;
+
+    if (session?.user?.email) {
+      const user = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        select: { id: true },
+      });
+
+      if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+
+      userId = user.id;
+    } else {
+      sessionId = await getOrCreateSessionId();
+    }
 
     const cartItem = await prisma.cartItem.findUnique({
       where: { id: itemId },
       include: { cart: true },
     });
 
-    if (!cartItem || cartItem.cart.sessionId !== sessionId) {
+    const isOwner =
+      (userId && cartItem?.cart?.userId === userId) ||
+      (sessionId && cartItem?.cart?.sessionId === sessionId);
+
+    if (!cartItem || !isOwner) {
       return NextResponse.json({ error: "Cart item not found or unauthorized" }, { status: 403 });
     }
 

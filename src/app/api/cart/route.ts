@@ -1,8 +1,10 @@
 // app/api/cart/route.ts
 import { NextResponse } from "next/server";
-import {prisma} from "@/lib/prisma"; // adjust path to your prisma client
+import {prisma} from "@/lib/prisma";
 import { z } from "zod";
 import { getOrCreateSessionId } from "@/lib/session";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const AddToCartRequest = z.object({
   menuItemId: z.string(),
@@ -13,45 +15,69 @@ const AddToCartRequest = z.object({
 
 export async function POST(req: Request) {
   try {
-    const sessionId =await getOrCreateSessionId();
+    const session = await getServerSession(authOptions);
+    let userId: string | null = null;
+    let sessionId: string | null = null;
+
+    // 🔐 Check if user is logged in
+    if (session?.user?.email) {
+      const user = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        select: { id: true },
+      });
+
+      if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+
+      userId = user.id;
+    } else {
+      sessionId = await getOrCreateSessionId();
+    }
 
     const body = await req.json();
     const parsed = AddToCartRequest.parse(body);
     const { menuItemId, sizeOptionId, crustOptionId, quantity } = parsed;
 
-    // 1. Find or create cart for this session
-    let cart = await prisma.cart.findFirst({ where: { sessionId } });
+    // 🔄 Find or create cart based on userId or sessionId
+    let cart;
 
-    if (!cart) {
-      cart = await prisma.cart.create({
-        data: { sessionId },
-      });
+    if (userId) {
+      cart = await prisma.cart.findFirst({ where: { userId } });
+      if (!cart) {
+        cart = await prisma.cart.create({ data: { userId } });
+      }
+    } else {
+      cart = await prisma.cart.findFirst({ where: { sessionId } });
+      if (!cart) {
+        cart = await prisma.cart.create({ data: { sessionId } });
+      }
     }
 
-    // 2. Find menu item + options
+    // ✅ Menu item validation
     const menuItem = await prisma.menuItem.findUnique({ where: { id: menuItemId } });
     if (!menuItem || !menuItem.price) {
-      return NextResponse.json({ error: 'Invalid menu item' }, { status: 400 });
+      return NextResponse.json({ error: "Invalid menu item" }, { status: 400 });
     }
 
     let multiplier = 1;
     if (sizeOptionId) {
       const size = await prisma.menuItemSize.findUnique({ where: { id: sizeOptionId } });
-      if (!size) return NextResponse.json({ error: 'Invalid size option' }, { status: 400 });
+      if (!size) return NextResponse.json({ error: "Invalid size option" }, { status: 400 });
       multiplier = size.multiplier.toNumber();
     }
 
     let crustPrice = 0;
     if (crustOptionId) {
       const crust = await prisma.menuItemCrust.findUnique({ where: { id: crustOptionId } });
-      if (!crust) return NextResponse.json({ error: 'Invalid crust option' }, { status: 400 });
+      if (!crust) return NextResponse.json({ error: "Invalid crust option" }, { status: 400 });
       crustPrice = crust.price.toNumber();
     }
 
     const unitPrice = menuItem.price.toNumber() * multiplier + crustPrice;
     const lineTotal = unitPrice * quantity;
 
-    // 3. Check for existing item with same options
+    // 🧾 Check for existing cart item
     const existingItem = await prisma.cartItem.findFirst({
       where: {
         cartId: cart.id,
@@ -86,7 +112,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // 4. Return updated cart
+    // 🔁 Return updated cart
     const updatedCart = await prisma.cart.findUnique({
       where: { id: cart.id },
       include: { items: true },
@@ -96,14 +122,13 @@ export async function POST(req: Request) {
   } catch (err: any) {
     console.error(err);
 
-    if (err.name === 'ZodError') {
-      return NextResponse.json({ error: 'Invalid input', issues: err.errors }, { status: 400 });
+    if (err.name === "ZodError") {
+      return NextResponse.json({ error: "Invalid input", issues: err.errors }, { status: 400 });
     }
 
-    return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
-
 
 // app/api/cart/route.ts
 
@@ -135,9 +160,33 @@ function calculateCartTotals(items: any[]) {
 export async function GET(req: Request) {
   try {
   
-    const sessionId =await getOrCreateSessionId();
+    const session = await getServerSession(authOptions);
+
+    let userId: string | null = null;
+    let sessionId: string | null = null;
+
+    // 2. If logged in, get userId
+    if (session?.user?.email) {
+      const user = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        select: { id: true },
+      });
+
+      if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+
+      userId = user.id;
+    } else {
+      // 3. Otherwise, treat as guest and get or create sessionId
+      sessionId = await getOrCreateSessionId();
+    }
+
+    // 4. Fetch cart by userId or sessionId
     const cart = await prisma.cart.findFirst({
-      where: { sessionId },
+      where: {
+        ...(userId ? { userId } : { sessionId }),
+      },
       include: {
         items: {
           include: {

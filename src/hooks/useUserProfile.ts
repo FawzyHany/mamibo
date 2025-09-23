@@ -41,9 +41,12 @@ export function useUserProfile() {
 // ----------------------
 // PATCH User Profile
 // ----------------------
-type UpdateUserProfileInput = Partial<
-  Pick<UserProfile, "firstName" | "lastName" | "email">
->;
+export type UpdateUserProfileInput = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string; // manually added
+};
 
 const updateUserProfile = async (updates: UpdateUserProfileInput) => {
   const res = await fetch("/api/user", {

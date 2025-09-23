@@ -9,6 +9,7 @@ import { getMessages } from 'next-intl/server';
 import {Footer} from '@/components/Footer/Footer'
 import ReactQueryProvider from "../provider/react-query-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { Providers } from "../provider/session-provider";
 
 
 
@@ -49,7 +50,9 @@ export default async function RootLayout({ children, params }: Props) {
         <NextIntlClientProvider locale={locale} messages={messages}>
         <ReactQueryProvider>
           <NavigationMenuDemo />
+          <Providers>
           {children}
+          </Providers>
           <Toaster />
           <Footer/>
           </ReactQueryProvider>

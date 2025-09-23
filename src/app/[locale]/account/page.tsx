@@ -8,6 +8,16 @@ import EditProfileForm from "@/components/EditProfile/EditProfileForm";
 import { EditAddressForm } from "@/components/account/EditAddressForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useUserAddresses } from "@/hooks/useUserAddress";
+import { useOrders } from "@/hooks/useOrders"
+import { OrderDetailsDialog } from "@/components/orders/OrderDetailsDialog";
+import { OrderCard } from "@/components/orders/OrderCard";
+import ChangePasswordForm from "@/components/security/ChangePasswordForm";
+import { signOut } from "next-auth/react";
+
+type Props = {
+  orderId: string
+  onClose: () => void
+}
 
 const sections = [
   { key: "profile", label: "Profile", icon: User },
@@ -20,12 +30,12 @@ export default function AccountDashboard() {
   const [active, setActive] = useState("profile");
   return (
     <div className="flex min-h-screen">
-      {" "}
-      {/* Sidebar */}{" "}
+      
+      {/* Sidebar */}
       <aside className="w-64 bg-gray-100 p-4 border-r">
-        {" "}
+       
         <nav className="space-y-2">
-          {" "}
+         
           {sections.map(({ key, label, icon: Icon }) => (
             <Button
               key={key}
@@ -33,21 +43,21 @@ export default function AccountDashboard() {
               className="w-full justify-start"
               onClick={() => setActive(key)}
             >
-              {" "}
-              <Icon className="mr-2 h-4 w-4" /> {label}{" "}
+              
+              <Icon className="mr-2 h-4 w-4" /> {label}
             </Button>
-          ))}{" "}
-        </nav>{" "}
-      </aside>{" "}
-      {/* Main Content */}{" "}
+          ))}
+        </nav>
+      </aside>
+      {/* Main Content */}
       <main className="flex-1 p-6">
-        {" "}
-        {active === "profile" && <ProfileSection />}{" "}
-        {active === "addresses" && <AddressesSection />}{" "}
-        {active === "orders" && <OrdersSection />}{" "}
-        {active === "security" && <SecuritySection />}{" "}
-        {active === "logout" && <Button variant="destructive">Sign Out</Button>}{" "}
-      </main>{" "}
+        
+        {active === "profile" && <ProfileSection />}
+        {active === "addresses" && <AddressesSection />}
+        {active === "orders" && <OrdersSection />}
+        {active === "security" && <SecuritySection />}
+        {active === "logout" && <SignOutButton/>}
+      </main>
     </div>
   );
 }
@@ -162,55 +172,64 @@ export function AddressesSection() {
   )
 }
 
-function OrdersSection() {
+export  function OrdersSection() {
+  const { data: orders, isLoading, error } = useOrders();
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
+
+  if (isLoading) return <p>Loading orders...</p>
+  if (error) return <p className="text-red-500">Failed to load orders</p>
+
   return (
-    <Card>
-      {" "}
+    <Card className="shadow-md">
       <CardHeader>
-        {" "}
-        <CardTitle>Order History</CardTitle>{" "}
-      </CardHeader>{" "}
-      <CardContent>
-        {" "}
-        <div className="border p-3 rounded-lg mb-2">
-          {" "}
-          <p>Order #12345</p> <p>Status: Delivered</p> <p>Total: $45.00</p>{" "}
-          <Button size="sm" className="mt-2">
-            {" "}
-            View Details{" "}
-          </Button>{" "}
-        </div>{" "}
-      </CardContent>{" "}
+        <CardTitle>My Orders</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {orders && orders.length > 0 ? (
+          orders.map((order) => (
+            <OrderCard
+              key={order.id}
+              order={order}
+              onViewDetails={() => setSelectedOrderId(order.id)}
+            />
+          ))
+        ) : (
+          <p>No orders found.</p>
+        )}
+      </CardContent>
+
+      {selectedOrderId && (
+        <OrderDetailsDialog
+          orderId={selectedOrderId}
+          onClose={() => setSelectedOrderId(null)}
+        />
+      )}
     </Card>
-  );
+  )
 }
-function SecuritySection() {
+export function SecuritySection() {
   return (
-    <Card>
-      {" "}
+    <Card className="shadow-md">
       <CardHeader>
-        {" "}
-        <CardTitle>Change Password</CardTitle>{" "}
-      </CardHeader>{" "}
-      <CardContent className="space-y-3">
-        {" "}
-        <input
-          type="password"
-          placeholder="Current Password"
-          className="border rounded px-2 py-1 w-full"
-        />{" "}
-        <input
-          type="password"
-          placeholder="New Password"
-          className="border rounded px-2 py-1 w-full"
-        />{" "}
-        <input
-          type="password"
-          placeholder="Confirm New Password"
-          className="border rounded px-2 py-1 w-full"
-        />{" "}
-        <Button>Update Password</Button>{" "}
-      </CardContent>{" "}
+        <CardTitle>Security</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ChangePasswordForm />
+      </CardContent>
     </Card>
+  )
+}
+
+
+export function SignOutButton() {
+  return (
+    <Button
+      variant="destructive"
+      onClick={() =>
+        signOut({ callbackUrl: "/" }) // redirect to home after logout
+      }
+    >
+      Sign Out
+    </Button>
   );
 }

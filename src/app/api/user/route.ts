@@ -94,6 +94,7 @@ export async function PATCH(req: Request) {
   const { firstName, lastName, email } = body;
 
   try {
+    
     const updatedUser = await prisma.user.update({
       where: { email: session.user.email },
       data: {

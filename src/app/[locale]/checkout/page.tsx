@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-
+import { useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -15,6 +15,10 @@ import { toast } from "sonner"
 import { useCart } from "@/hooks/useCart";
 import { useCheckout } from "@/hooks/useCheckout";
 import { useReverseGeocoding } from "@/hooks/reverseGeocoding";
+import { useSession } from "next-auth/react";
+import { useUserAddresses } from "@/hooks/useUserAddress";
+import Link from "next/link";
+
 
 
 // 1. Validation schema (Zod)
@@ -35,7 +39,16 @@ const checkoutSchema = z.object({
 
 type CheckoutFormValues = z.infer<typeof checkoutSchema>
 
+
+
 export default function CheckoutPage() {
+
+  const { data: session } = useSession();
+const isLoggedIn = !!session?.user;
+
+const { data: addresses = [], isLoading: addressesLoading } = useUserAddresses();
+
+const defaultAddress = addresses.find((a) => a.isDefault);
 
   const { data: cart, isLoading } = useCart();
   const checkoutMutation = useCheckout();
@@ -57,6 +70,27 @@ export default function CheckoutPage() {
       lng: undefined,
     },
   });
+
+
+  useEffect(() => {
+    if (defaultAddress) {
+      form.reset({
+        firstName: defaultAddress.firstName,
+        lastName: defaultAddress.lastName,
+        phone: defaultAddress.phone,
+        email: session?.user?.email ?? "",
+        address: defaultAddress.address,
+        building: defaultAddress.building ?? "",
+        floor: defaultAddress.floor ?? "",
+        flat: defaultAddress.flat ?? "",
+        landmark: defaultAddress.landmark ?? "",
+        lat: defaultAddress.lat,
+        lng: defaultAddress.lng,
+        paymentType: "cod",
+      });
+    }
+  }, [defaultAddress, session?.user?.email, form]);
+  
 
 
 
@@ -90,7 +124,7 @@ export default function CheckoutPage() {
         onSuccess: () => {
           toast.success("Order placed");
           toast.success("Thank you for your order!");
-        
+          window.location.reload();
         },
         onError: () => {
           toast.error("Checkout failed");
@@ -115,6 +149,64 @@ export default function CheckoutPage() {
     <div className="container mx-auto py-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
       
       {/* LEFT COLUMN: Customer + Payment Form */}
+      {isLoggedIn ? (
+  <Card>
+  <CardHeader>
+    <CardTitle>Customer Information</CardTitle>
+  </CardHeader>
+  <CardContent>
+    {addressesLoading ? (
+      <p>Loading address...</p>
+    ) : defaultAddress ? (
+      // ✅ Show read-only summary if user has a default address
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="space-y-2">
+            <p>
+              <span className="font-medium">
+                {defaultAddress.firstName} {defaultAddress.lastName}
+              </span>
+              <br />
+              {defaultAddress.phone}
+              <br />
+              {/* {defaultAddress.email}<br /> */}
+              {defaultAddress.address}, Building {defaultAddress.building}, Floor {defaultAddress.floor}, Flat {defaultAddress.flat}
+              <br />
+              {defaultAddress.landmark}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Using your default address. Update it in{" "}
+              <Link href="/account" className="underline">
+                your account
+              </Link>.
+            </p>
+          </div>
+
+          {/* Submit button inside form */}
+          <Button
+            type="submit"
+            className="w-full cursor-pointer"
+            disabled={checkoutMutation.status === "pending"}
+          >
+            {checkoutMutation.status === "pending" ? "Placing order..." : "Place Order"}
+          </Button>
+        </form>
+      </Form>
+    ) : (
+      // ❌ User has no address saved
+      <div>
+        <p className="text-sm mb-2">You haven’t added a delivery address yet.</p>
+        <Link href="/account/addresses">
+          <Button className="cursor-pointer" variant="outline">Add Address</Button>
+        </Link>
+      </div>
+    )}
+  </CardContent>
+</Card>
+
+) : (
+  // Show full guest form
+
       <Card>
         <CardHeader>
           <CardTitle>Customer Information</CardTitle>
@@ -308,7 +400,7 @@ export default function CheckoutPage() {
               {/* Submit */}
               <Button
   type="submit"
-  className="w-full"
+  className="w-full cursor-pointer"
   disabled={checkoutMutation.status === "pending"}
 >
   {checkoutMutation.status === "pending" ? "Placing order..." : "Place Order"}
@@ -316,7 +408,7 @@ export default function CheckoutPage() {
             </form>
           </Form>
         </CardContent>
-      </Card>
+      </Card>)}
 
       {/* Right Column - Order Summary */}
       <Card>
