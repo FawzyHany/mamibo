@@ -101,6 +101,7 @@ export async function POST(req: Request) {
   });
     // 4. Clear cart
     await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
+    console.log("🗑 Deleting cart items for cartId:", cart.id);
 
     return NextResponse.json(order, { status: 201 });
   } catch (err) {

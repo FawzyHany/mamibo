@@ -18,6 +18,7 @@ import { useReverseGeocoding } from "@/hooks/reverseGeocoding";
 import { useSession } from "next-auth/react";
 import { useUserAddresses } from "@/hooks/useUserAddress";
 import Link from "next/link";
+import PaymentForm from "@/components/PaymentForm/PaymentForm"
 
 
 
@@ -70,6 +71,8 @@ const defaultAddress = addresses.find((a) => a.isDefault);
       lng: undefined,
     },
   });
+
+  const paymentType = form.watch("paymentType");
 
 
   useEffect(() => {
@@ -124,7 +127,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
         onSuccess: () => {
           toast.success("Order placed");
           toast.success("Thank you for your order!");
-          window.location.reload();
+         
         },
         onError: () => {
           toast.error("Checkout failed");
@@ -183,14 +186,50 @@ const defaultAddress = addresses.find((a) => a.isDefault);
           </div>
 
           {/* Submit button inside form */}
+          {paymentType === "cod" && (
+            <div className="">
           <Button
             type="submit"
             className="w-full cursor-pointer"
             disabled={checkoutMutation.status === "pending"}
           >
             {checkoutMutation.status === "pending" ? "Placing order..." : "Place Order"}
-          </Button>
+          </Button> </div>)}
+          <div className="space-y-2">
+                <FormField
+                  control={form.control}
+                  name="paymentType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Payment Method</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          className="flex flex-col space-y-2"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="cod" id="cod" />
+                            <Label htmlFor="cod">Cash on Delivery</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="card" id="card" />
+                            <Label htmlFor="card">Card</Label>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Submit */}
+          
         </form>
+          {paymentType === "card" && (
+            <PaymentForm/>
+          )}
       </Form>
     ) : (
       // ❌ User has no address saved
@@ -201,8 +240,11 @@ const defaultAddress = addresses.find((a) => a.isDefault);
         </Link>
       </div>
     )}
+    
   </CardContent>
 </Card>
+
+
 
 ) : (
   // Show full guest form
@@ -398,14 +440,22 @@ const defaultAddress = addresses.find((a) => a.isDefault);
               </div>
 
               {/* Submit */}
-              <Button
-  type="submit"
-  className="w-full cursor-pointer"
-  disabled={checkoutMutation.status === "pending"}
->
-  {checkoutMutation.status === "pending" ? "Placing order..." : "Place Order"}
-</Button>
+             
+              {paymentType === "cod" && (        
+  <Button
+    type="submit"
+    className="w-full cursor-pointer"
+    disabled={checkoutMutation.status === "pending"}
+  >
+    {checkoutMutation.status === "pending" ? "Placing order..." : "Place Order"}
+  </Button>)}
+
+
+
             </form>
+            {paymentType === "card" && (
+  <PaymentForm/>
+)}
           </Form>
         </CardContent>
       </Card>)}
