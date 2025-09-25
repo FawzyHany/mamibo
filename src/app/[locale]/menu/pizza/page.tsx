@@ -8,7 +8,11 @@ export default async function PizzaPage() {
   const pizzaCategory = await prisma.category.findUnique({
     where: { name: "Pizza" },
     include: {
-      items: true, // load all MenuItems
+      items: {
+        where: {
+          isAvailable: true,
+        },
+      },
     },
   })
 

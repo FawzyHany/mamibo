@@ -16,12 +16,14 @@ import { CartDropdown } from "./CartDropdown"; // cart drawer
 import { DropDownNavBar } from "./DropDown"; // user profile dropdown
 import { LogoNavBar } from "./logo"; // logo
 import { MobileMenuDrawer } from "./MobileMenuDrawer"; // new hamburger menu drawer
+import { useRouter } from "next/router";
 
 export function NavigationMenuDemo() {
   const t = useTranslations();
-
+  // const { locale } = useRouter();
   return (
-    <div className="mt-10 flex justify-between items-center py-4 px-6 w-full max-w-screen-xl mx-auto border-b-2 border-b-[var(--primary-color2)] sticky top-0 bg-white z-50 ">
+<div className=" flex justify-between items-center p-4 w-full border-b-2 border-b-[var(--primary-color2)] sticky top-0 bg-white z-50 border w-full">
+<div className="w-[90%] flex justify-between items-center mx-auto">
       {/* Left: Logo */}
       <LogoNavBar />
 
@@ -30,7 +32,7 @@ export function NavigationMenuDemo() {
         <NavigationMenu>
           <NavigationMenuList className="flex gap-6">
             <NavigationMenuItem>
-              <NavigationMenuLink href="/">
+              <NavigationMenuLink href='/'>
                 {t("navbar.home")}
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -72,6 +74,7 @@ export function NavigationMenuDemo() {
 
         {/* Cart icon (always visible) */}
         <CartDropdown />
+      </div>
       </div>
     </div>
   );

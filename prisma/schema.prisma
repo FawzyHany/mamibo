@@ -14,17 +14,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+enum Role {
+  USER
+  STAFF
+  ADMIN
+}
+
+
 model User {
   id          String        @id @default(cuid())
   email       String        @unique
   firstName   String
   lastName    String? // optional
   password    String
+  role        Role     @default(USER)
   createdAt   DateTime      @default(now())
   updateAt    DateTime      @updatedAt
   Cart        Cart[]
   Order       Order[]
   UserAddress UserAddress[]
+
 }
 
 model Category {
@@ -39,6 +49,7 @@ model MenuItem {
   description String?
   imageUrl    String?
   categoryId  String
+  isAvailable Boolean  @default(true)
   price       Decimal?
   category    Category @relation(fields: [categoryId], references: [id])
 
@@ -216,4 +227,13 @@ model UserAddress {
   isDefault Boolean  @default(false) // one default address per user
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  createdAt DateTime @default(now())
 }

@@ -7,9 +7,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils'; // if you're using cn helper
+import { cn } from '@/lib/utils';
 
-// ✅ 1. Define schema with Zod
+import { useSubmitContact } from '@/hooks/useSubmitContact';
+
+// ✅ Schema
 const contactSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email'),
@@ -17,55 +19,56 @@ const contactSchema = z.object({
   message: z.string().min(1, 'Message is required'),
 });
 
-// ✅ 2. Create TypeScript type from schema
 type ContactFormData = z.infer<typeof contactSchema>;
 
-// ✅ 3. Component
 export default function ContactForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isSubmitSuccessful },
+    formState: { errors },
     reset,
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
   });
 
-  const onSubmit = (data: ContactFormData) => {
-    console.log('Submitted:', data);
+  const {
+    mutate: submitContact,
+    isPending,
+    isSuccess,
+  } = useSubmitContact();
 
-    // simulate async submit
-    setTimeout(() => {
-      reset(); // Clear form after successful submission
-    }, 1000);
+  const onSubmit = (data: ContactFormData) => {
+    submitContact(data, {
+      onSuccess: () => reset(),
+    });
   };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className={cn('space-y-6 max-w-xl mx-auto ')}
+      className={cn('space-y-6 max-w-xl mx-auto')}
     >
       <div>
-        <Input className='bg-white' placeholder="Name" {...register('name')} />
+        <Input className="bg-white" placeholder="Name" {...register('name')} />
         {errors.name && (
           <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
         )}
       </div>
 
       <div>
-        <Input className='bg-white' placeholder="Email" {...register('email')} />
+        <Input className="bg-white" placeholder="Email" {...register('email')} />
         {errors.email && (
           <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
         )}
       </div>
 
       <div>
-        <Input className='bg-white' placeholder="Phone (optional)" {...register('phone')} />
+        <Input className="bg-white" placeholder="Phone (optional)" {...register('phone')} />
       </div>
 
       <div>
         <Textarea
-        className='bg-white'
+          className="bg-white"
           placeholder="Your message"
           rows={4}
           {...register('message')}
@@ -75,11 +78,11 @@ export default function ContactForm() {
         )}
       </div>
 
-      <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Sending...' : 'Send Message'}
+      <Button type="submit" disabled={isPending}>
+        {isPending ? 'Sending...' : 'Send Message'}
       </Button>
 
-      {isSubmitSuccessful && (
+      {isSuccess && (
         <p className="text-green-600 text-sm mt-2">Message sent successfully!</p>
       )}
     </form>

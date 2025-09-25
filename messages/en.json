@@ -4,6 +4,9 @@
     "service": "Service",
     "aboutUs": "About Us",
     "menu": "Menu",
-    "account": "Account"
+    "myaccount": "My Account",
+    "account": "Account",
+    "profile": "Profile",
+    "signout": "Sign Out"
   }
 }

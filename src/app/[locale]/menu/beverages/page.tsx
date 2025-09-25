@@ -7,7 +7,11 @@ import { AppBreadcrumb } from "@/components/Breadcrumb/Breadcrumb"
   const BeveragesCategory = await prisma.category.findUnique({
     where: { name: "Beverage" },
     include: {
-      items: true, // load all MenuItems
+      items: {
+        where: {
+          isAvailable: true,
+        },
+      },
     },
   })
 
