@@ -11,11 +11,11 @@ type UpdateCartItemRequest = {
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { itemId: string } }
+  { params }: { params: Promise<{ itemId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
-    const { itemId } = params;
+    const { itemId } = await params;
     const body: UpdateCartItemRequest = await req.json();
     const { quantity } = body;
 
@@ -81,11 +81,11 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { itemId: string } }
+  { params }: { params: Promise<{ itemId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
-    const { itemId } = params;
+    const { itemId } = await params;
 
     let userId: string | null = null;
     let sessionId: string | null = null;

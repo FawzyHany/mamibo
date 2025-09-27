@@ -11,10 +11,10 @@ type DessertDetailPageProps = {
 }
 
 export default async function DessertDetailPage({ params }: DessertDetailPageProps) {
-  // find pizza by slug (name)
+  const { locale, slug } = await params;
   const product = await prisma.menuItem.findFirst({
     where: {
-      name: { equals: (await params).slug.replace(/-/g, " "), mode: "insensitive" },
+      name: { equals:slug.replace(/-/g, " "), mode: "insensitive" },
     },
     include: {
       // If you later connect sizes/crusts tables, fetch them here

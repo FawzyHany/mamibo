@@ -10,9 +10,10 @@ interface AppetizerDetailPageProps {
 }
 
 export default async function AppetizerDetailPage({ params }: AppetizerDetailPageProps) {
+  const { locale, slug } = await params;
   const product = await prisma.menuItem.findFirst({
     where: {
-      name: { equals: (await params).slug.replace(/-/g, " "), mode: "insensitive" },
+      name: { equals: slug.replace(/-/g, " "), mode: "insensitive" },
     },
   });
 
