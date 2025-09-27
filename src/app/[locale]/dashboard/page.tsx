@@ -3,10 +3,8 @@
 import { useState } from "react"
 import { ActiveOrderList } from "@/components/dashboard/orders/ActiveOrderList"
 import { OrderHistoryList } from "@/components/dashboard/orders/OrderHistoryList"
-// import { ProductsStock } from "@/components/dashboard/products/ProductsStock"
-import { useProducts } from "@/hooks/useProducts"
-import { ProductCard } from "@/components/dashboard/products/ProductCard"
 import ContactMessages from "@/components/ContactForm/ContactMessages"
+import ProductsStock from "@/components/dashboard/products/ProductsStock"
 
 
 type Section =
@@ -116,18 +114,3 @@ export default function DashboardPage() {
 
 
 
-
-
-export function ProductsStock() {
-  const { data: products } = useProducts()
-
-  if (!products?.length) return <div>No products available</div>
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
-    </div>
-  )
-}
