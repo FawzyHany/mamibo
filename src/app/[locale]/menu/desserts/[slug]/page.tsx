@@ -5,9 +5,11 @@ import { ProductDetail } from "@/components/ProductDetail/ProductDetail"
 
 type PizzaDetailPageProps = {
   params: {
+    locale: string; // <--- ADD THIS LINE
     slug: string;
   };
 };
+
 export default async function PizzaDetailPage({ params }: PizzaDetailPageProps) {
   // find pizza by slug (name)
   const product = await prisma.menuItem.findFirst({

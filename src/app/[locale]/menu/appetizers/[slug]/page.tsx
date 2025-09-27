@@ -4,6 +4,7 @@ import { ProductDetail } from "@/components/ProductDetail/ProductDetail"
 
 type PizzaDetailPageProps = {
   params: {
+    locale: string; // <--- ADD THIS LINE
     slug: string;
   };
 };
