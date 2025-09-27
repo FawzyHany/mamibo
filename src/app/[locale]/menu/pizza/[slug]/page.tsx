@@ -3,17 +3,17 @@ import { notFound } from "next/navigation"
 import { ProductDetail } from "@/components/ProductDetail/ProductDetail"
 
 type PizzaDetailPageProps = {
-  params: {
-    locale: string; // <--- ADD THIS LINE
+  params: Promise<{
+    locale: string;
     slug: string;
-  };
-};
+  }>;
+}
 
 export default async function PizzaDetailPage({ params }: PizzaDetailPageProps) {
   // find pizza by slug (name)
   const product = await prisma.menuItem.findFirst({
     where: {
-      name: { equals: params.slug.replace(/-/g, " "), mode: "insensitive" },
+      name: { equals: (await params).slug.replace(/-/g, " "), mode: "insensitive" },
     },
     include: {
       // If you later connect sizes/crusts tables, fetch them here
