@@ -12,8 +12,18 @@ import { Menu, ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { cn } from "../../lib/utils";
+import { signOut } from "next-auth/react";
 
 export const MobileMenuDrawer = () => {
+
+  const categories = [
+    { key: "navbar.pizza", href: "/menu/pizza" },
+    { key: "navbar.appetizers", href: "/menu/appetizers" },
+    { key: "navbar.beverages", href: "/menu/beverages" },
+    { key: "navbar.desserts", href: "/menu/desserts" },
+  ];
+  
+
   const t = useTranslations();
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
   const [isAccmenuOpen, setIsAccmenuOpen] = useState(false);
@@ -48,13 +58,16 @@ export const MobileMenuDrawer = () => {
 
           {isSubmenuOpen && (
             <div className="ml-4 flex flex-col gap-2 text-base text-gray-700">
-              <Link href="/menu/item1" className="hover:underline">
-                {t("navbar.subitem1") ?? "Sub Item 1"}
-              </Link>
-              <Link href="/menu/item2" className="hover:underline">
-                {t("navbar.subitem2") ?? "Sub Item 2"}
-              </Link>
-              {/* Add more submenu items as needed */}
+              
+              
+              {categories.map((item) => {
+            return (
+           <Link href={item.href} className="hover:underline" key={item.key}>
+            {t(item.key)}
+            </Link>
+             );
+              })}
+
             </div>
           )}
 
@@ -76,12 +89,9 @@ export const MobileMenuDrawer = () => {
 
           {isAccmenuOpen && (
             <div className="ml-4 flex flex-col gap-2 text-base text-gray-700">
-              <Link href="/menu/item1" className="hover:underline">
-                {t("navbar.subitem1") ?? "Sub Item 1"}
-              </Link>
-              <Link href="/menu/item2" className="hover:underline">
-                {t("navbar.subitem2") ?? "Sub Item 2"}
-              </Link>
+              <Link href="/account">{t("navbar.account")}</Link>
+              <Button className="cursor-pointer" variant="destructive" onClick={() =>signOut({ callbackUrl: "/" }) 
+}>{t("navbar.signout")}</Button>
               {/* Add more submenu items as needed */}
             </div>
           )}

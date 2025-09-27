@@ -1,3 +1,4 @@
+"use client"
 import { CarouselHome } from "@/components/NavBar/CarouselHome";
 import Image from "next/image";
 import chef from '../../../public/HomeImg/chef.jpg'
@@ -8,9 +9,10 @@ import { ServiceCard } from "@/components/ServiceCard/ServiceCard";
 import serviceImg from '../../../public/ServiceImg/serviceBackground.jpeg'
 import { Truck, Utensils } from 'lucide-react';
 import ContactForm from "@/components/ContactForm/ContactForm";
+import { useTranslations } from "next-intl";
 
 export default function Home() {
-  
+  const t = useTranslations();
   return (
     <>
     <main className="mt-10">
@@ -25,7 +27,7 @@ export default function Home() {
     </div>
 
     <div className="mt-10 ">
-      <h4 className="secondary-font italic text-[25px] text-[var(--primary-color2)] font-medium">About Us</h4>
+      <h4 className="secondary-font italic text-[25px] text-[var(--primary-color2)] font-medium">{t("navbar.aboutUs")}</h4>
       <h1 className="primary-font text-[30px] font-bold">RESPECTED EXPERT CHEFS</h1>
       <div className="w-[70%]">
       <p className="text-[#959595]">
@@ -48,7 +50,7 @@ export default function Home() {
 
     <Container>
     <div id="service" className=" w-full flex flex-col items-center justify-center ">
-    <h4 className="secondary-font italic text-[25px] text-[var(--primary-color2)] font-medium">Services</h4>
+    <h4 className="secondary-font italic text-[25px] text-[var(--primary-color2)] font-medium">{t("navbar.service")}</h4>
     <h1 className="primary-font text-[30px] font-bold">WHAT WE CAN DO FOR YOU</h1>
     <p className="text-[#959595] w-[70%] text-center">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed leo facilisis, imperdiet ligula et, aliquam nisl..</p>
 
@@ -63,7 +65,7 @@ export default function Home() {
     <div className="bg-gray-200">
     <Container>
     
-      <h1 className={cn('text-[40px] primary-font mx-auto mb-5 font-bold max-w-xl mx-auto ')}>Contact Us</h1>
+      <h1 className={cn('text-[40px] primary-font mx-auto mb-5 font-bold max-w-xl mx-auto ')}>{t("navbar.contactus")}</h1>
       <ContactForm/>
       
     </Container>  </div>

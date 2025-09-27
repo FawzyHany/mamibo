@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 import { useSubmitContact } from '@/hooks/useSubmitContact';
+import { useTranslations } from 'next-intl';
 
 // ✅ Schema
 const contactSchema = z.object({
@@ -22,6 +23,8 @@ const contactSchema = z.object({
 type ContactFormData = z.infer<typeof contactSchema>;
 
 export default function ContactForm() {
+
+  const t = useTranslations();
   const {
     register,
     handleSubmit,
@@ -49,27 +52,27 @@ export default function ContactForm() {
       className={cn('space-y-6 max-w-xl mx-auto')}
     >
       <div>
-        <Input className="bg-white" placeholder="Name" {...register('name')} />
+        <Input className="bg-white" placeholder={t("ContactUsForm.name")} {...register('name')} />
         {errors.name && (
           <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
         )}
       </div>
 
       <div>
-        <Input className="bg-white" placeholder="Email" {...register('email')} />
+        <Input className="bg-white" placeholder={t("ContactUsForm.email")} {...register('email')} />
         {errors.email && (
           <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
         )}
       </div>
 
       <div>
-        <Input className="bg-white" placeholder="Phone (optional)" {...register('phone')} />
+        <Input className="bg-white" placeholder={t("ContactUsForm.phone")} {...register('phone')} />
       </div>
 
       <div>
         <Textarea
           className="bg-white"
-          placeholder="Your message"
+          placeholder={t("ContactUsForm.message")}
           rows={4}
           {...register('message')}
         />
@@ -79,11 +82,12 @@ export default function ContactForm() {
       </div>
 
       <Button type="submit" disabled={isPending}>
-        {isPending ? 'Sending...' : 'Send Message'}
+        {isPending ? 'Sending...' : t("ContactUsForm.button")}
+        
       </Button>
 
       {isSuccess && (
-        <p className="text-green-600 text-sm mt-2">Message sent successfully!</p>
+        <p className="text-green-600 text-sm mt-2">{t("ContactUsForm.successMessage")}</p>
       )}
     </form>
   );

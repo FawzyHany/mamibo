@@ -2,8 +2,10 @@ import { prisma } from "@/lib/prisma"
 import { CustomCardProduct } from "@/components/CustomCardProduct/CustomCardProduct"
 import slugify from "@/lib/slugify"
 import { AppBreadcrumb } from "@/components/Breadcrumb/Breadcrumb"
+import { useTranslations } from "next-intl";
 
 export default async function PizzaPage() {
+  // const t = useTranslations();
   // 1. Query category "Pizza" and its items
   const pizzaCategory = await prisma.category.findUnique({
     where: { name: "Pizza" },

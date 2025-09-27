@@ -3,10 +3,31 @@
     "home": "الرئيسية",
     "service": "الخدمات",
     "aboutUs": "معلومات عنا",
+    "contactus": "تواصل معنا",
     "menu": "القائمة",
     "myaccount": "حسابي",
     "account": "الحساب",
     "profile": "الملف الشخصي",
-    "signout": "الخروج"
+    "signout": "الخروج",
+    "pizza":"بيتزا",
+    "appetizers": "مقبلات",
+    "beverages": "مشروبات",
+    "desserts": "الحلو",
+    "cartempty":"عربة التسوق الخاصة بك فارغة"
+  }
+
+  ,
+
+  "ContactUsForm":{
+    "successMessage": "تم ارسال رسالتك",
+    "name":"الاسم",
+    "email": "الايميل",
+    "phone": "رقم الهاتف",
+    "message": "رسالتك...",
+    "button": "ارسل"
+  },
+
+  "menu":{
+    "description":"اكتشف الأطباق الإيطالية الأصيلة"
   }
 }

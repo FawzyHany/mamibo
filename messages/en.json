@@ -3,10 +3,30 @@
     "home": "Home",
     "service": "Service",
     "aboutUs": "About Us",
+    "contactus": "Contact Use",
     "menu": "Menu",
     "myaccount": "My Account",
     "account": "Account",
     "profile": "Profile",
-    "signout": "Sign Out"
+    "signout": "Sign Out",
+    "pizza":"Pizza",
+    "appetizers": "Appetizers",
+    "beverages": "Beverages",
+    "desserts": "Desserts",
+    "cartempty":"Your cart is empty"
+  },
+
+  "ContactUsForm":{
+    "successMessage": "Message sent successfully!",
+    "name":"Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Your Message...",
+    "button": "Send Message"
+  },
+
+  "menu":{
+    "description":"Discover authentic Italian dishes by category"
   }
+ 
 }

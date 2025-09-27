@@ -26,8 +26,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { useTranslations } from "next-intl";
 
 export function CartDropdown() {
+
+  const t = useTranslations();
 
   const { data: cart, isLoading } = useCart();
   const removeItem = useRemoveCartItem(); // no cartId needed
@@ -60,7 +63,7 @@ export function CartDropdown() {
     )}
 
     {!isLoading && cart?.items.length === 0 && (
-      <p className="text-sm text-muted-foreground">Your cart is empty</p>
+      <p className="text-sm text-muted-foreground text-center">{t("navbar.cartempty")}</p>
     )}
 
     {!isLoading &&
@@ -153,12 +156,10 @@ export function CartDropdown() {
         <span>Subtotal:</span>
         <span>{cart.subtotal.toFixed(2)} LE</span>
       </div>
-      <div className="flex justify-end gap-2 mt-2">
-        <Button asChild size="sm" variant="outline">
-          <Link href="/cart">Go to Cart</Link>
-        </Button>
-        <Button size="sm" disabled>
-          Checkout
+      <div className="flex justify-center gap-2 mt-2 ">
+        <Button className="w-[80%]" size="sm" variant={"default"}>
+          <a href="/checkout">
+          Checkout</a>
         </Button>
       </div>
     </div>
