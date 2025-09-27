@@ -2,17 +2,17 @@ import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import { ProductDetail } from "@/components/ProductDetail/ProductDetail"
 
-type AppetizerDetailPageProps = {
-  params: {
+interface AppetizerDetailPageProps {
+  params: Promise<{
     locale: string;
     slug: string;
-  };
-};
+  }>;
+}
 
 export default async function AppetizerDetailPage({ params }: AppetizerDetailPageProps) {
   const product = await prisma.menuItem.findFirst({
     where: {
-      name: { equals: params.slug.replace(/-/g, " "), mode: "insensitive" },
+      name: { equals: (await params).slug.replace(/-/g, " "), mode: "insensitive" },
     },
   });
 
