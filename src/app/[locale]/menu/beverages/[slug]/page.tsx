@@ -9,7 +9,7 @@ type BeverageDetailPageProps = {
   };
 };
 
-export default async function PizzaDetailPage({ params }: BeverageDetailPageProps) {
+export default async function BeveragDetailPage({ params }: BeverageDetailPageProps) {
   // find pizza by slug (name)
   const product = await prisma.menuItem.findFirst({
     where: {
