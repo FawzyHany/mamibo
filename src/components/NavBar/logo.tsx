@@ -6,9 +6,11 @@ import { useLocale } from 'next-intl';
 
 
 
+
 export const LogoNavBar = () => {
   const locale = useLocale();
   return (
+    
     <a href={`/${locale}`}>
   <Image
     src={HorizontalLogo}

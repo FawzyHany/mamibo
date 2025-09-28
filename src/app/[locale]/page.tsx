@@ -34,7 +34,7 @@ export default function Home() {
 
   <br /><br />
 
-  Our chefs are dedicated to preserving authentic Italian flavors while adding a touch of modern flair. Whether you're savoring our creamy risottos, rustic antipasti, or our signature tiramisu, you'll experience the warmth and soul of true Italian hospitality.
+  Our chefs are dedicated to preserving authentic Italian flavors while adding a touch of modern flair. Whether you&apos;re savoring our creamy risottos, rustic antipasti, or our signature tiramisu, you&apos;ll experience the warmth and soul of true Italian hospitality.
 
   <br /><br />
 

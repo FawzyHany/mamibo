@@ -156,6 +156,7 @@ export function CartDropdown() {
       </div>
       <div className="flex justify-center gap-2 mt-2 ">
         <Button className="w-[80%]" size="sm" variant={"default"}>
+         
           <a href="/checkout">
           Checkout</a>
         </Button>
