@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions)
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -17,8 +17,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   if (!user || (user.role !== "STAFF" && user.role !== "ADMIN")) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
-
-  const { id } = params
+ 
+  const { id } =await params
   const { isAvailable } = await req.json()
 
   const product = await prisma.menuItem.update({

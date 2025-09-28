@@ -43,7 +43,7 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }>}
 ) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
@@ -63,11 +63,11 @@ export async function PATCH(
   if (user.role !== "ADMIN" && user.role !== "STAFF") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
-
+  const { id } = await params;
   const { status } = await req.json();
 
   const order = await prisma.order.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     select: { id: true }, // Just verifying it exists
   });
 
@@ -76,7 +76,7 @@ export async function PATCH(
   }
 
   const updated = await prisma.order.update({
-    where: { id: params.id },
+    where: { id: id },
     data: { status },
   });
 

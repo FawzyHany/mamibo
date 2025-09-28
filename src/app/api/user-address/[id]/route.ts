@@ -20,7 +20,7 @@ const updateSchema = z.object({
   isDefault: z.boolean().optional(),
 });
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
@@ -40,20 +40,22 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     if (updateData.isDefault === true) {
       // Unset other defaults then set this one
       const updated = await prisma.$transaction(async (tx) => {
+        const { id } = await params;
         await tx.userAddress.updateMany({
           where: { userId: user.id, isDefault: true },
           data: { isDefault: false },
         });
         return tx.userAddress.update({
-          where: { id: params.id },
+          where: { id: id },
           data: updateData,
         });
       });
       return NextResponse.json(updated);
     } else {
+      const { id } = await params;
       // Regular update
       const address = await prisma.userAddress.update({
-        where: { id: params.id },
+        where: { id:id },
         data: updateData,
       });
       return NextResponse.json(address);
@@ -65,7 +67,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 }
 
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
@@ -76,8 +78,9 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
     // Make sure the address belongs to this user and remember if it was default
+    const { id } = await params;
     const addressBefore = await prisma.userAddress.findUnique({
-      where: { id: params.id },
+      where: { id:id },
     });
 
     if (!addressBefore) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -86,7 +89,8 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 
     await prisma.$transaction(async (tx) => {
-      await tx.userAddress.delete({ where: { id: params.id } });
+      const { id } = await params;
+      await tx.userAddress.delete({ where: { id: id } });
 
       // If deleted was default, set another address as default (optional)
       if (addressBefore.isDefault) {
