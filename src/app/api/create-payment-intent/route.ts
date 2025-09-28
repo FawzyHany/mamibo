@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(request: NextRequest) {
   try {
