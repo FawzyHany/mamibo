@@ -1,7 +1,8 @@
 // hooks/useCheckout.ts
+import { checkoutSchema } from "@/lib/schemas";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
-import { checkoutSchema } from "@/app/api/checkout/route";  ; // we’ll extract schema here
+ // we’ll extract schema here
 
 // 👇 response type from backend
 export type CheckoutResponse = {
