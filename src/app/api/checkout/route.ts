@@ -3,25 +3,10 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { PaymentType } from "@/generated/prisma";
+import { checkoutSchema } from "@/lib/schemas";
 
 // Zod schema for checkout POST body
- const checkoutSchema = z.object({
-  cartId: z.string(),
-  address: z.object({
-    firstName: z.string(),
-    lastName: z.string(),
-    phone: z.string(),
-    email: z.string().optional(),
-    address: z.string(),
-    building: z.string(),
-    floor: z.string().optional(),
-    flat: z.string().optional(),
-    landmark: z.string().optional(),
-    lat: z.number(),
-    lng: z.number(),
-  }),
-  paymentType: z.enum(["cod", "card"]),
-});
+
 
 
 
@@ -110,3 +95,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Checkout failed" }, { status: 500 });
   }
 }
+export { checkoutSchema };
+
