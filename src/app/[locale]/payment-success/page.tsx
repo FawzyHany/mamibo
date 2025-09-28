@@ -2,7 +2,6 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import { useCart } from "@/hooks/useCart";
 import { useCheckout } from "@/hooks/useCheckout"; 
 
 
@@ -11,7 +10,7 @@ export default function PaymentSuccessPage() {
 
  
   
-  const { data: cart } = useCart();
+
   const checkoutMutation = useCheckout();
   const params = useSearchParams();
   const cartId = params.get("cartId");

@@ -7,10 +7,10 @@ import AddressesSection from "@/components/account/AddressesSection";
 import { OrdersSection, SecuritySection } from "@/components/account/OrdersSection";
 import { SignOutButton } from "@/components/account/SignOutButton";
 
-type Props = {
-  orderId: string
-  onClose: () => void
-}
+// type Props = {
+//   orderId: string
+//   onClose: () => void
+// }
 
 const sections = [
   { key: "profile", label: "Profile", icon: User },

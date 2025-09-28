@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma"
 import { CustomCardProduct } from "@/components/CustomCardProduct/CustomCardProduct"
 import slugify from "@/lib/slugify"
 import { AppBreadcrumb } from "@/components/Breadcrumb/Breadcrumb"
-import { useTranslations } from "next-intl";
+
 
 export default async function PizzaPage() {
   // const t = useTranslations();

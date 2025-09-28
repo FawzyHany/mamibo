@@ -11,7 +11,7 @@ type DessertDetailPageProps = {
 }
 
 export default async function DessertDetailPage({ params }: DessertDetailPageProps) {
-  const { locale, slug } = await params;
+  const { slug } = await params;
   const product = await prisma.menuItem.findFirst({
     where: {
       name: { equals:slug.replace(/-/g, " "), mode: "insensitive" },

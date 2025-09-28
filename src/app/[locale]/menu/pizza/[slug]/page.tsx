@@ -10,7 +10,7 @@ type PizzaDetailPageProps = {
 }
 
 export default async function PizzaDetailPage({ params }: PizzaDetailPageProps) {
-  const { locale, slug } = await params;
+  const {  slug } = await params;
   const product = await prisma.menuItem.findFirst({
     where: {
       name: { equals:slug.replace(/-/g, " "), mode: "insensitive" },

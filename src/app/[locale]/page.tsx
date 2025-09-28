@@ -4,7 +4,6 @@ import Image from "next/image";
 import chef from '../../../public/HomeImg/chef.jpg'
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/Container/Container";
-import grayscale from '../../../public/logo/grayscale.svg'
 import { ServiceCard } from "@/components/ServiceCard/ServiceCard";
 import serviceImg from '../../../public/ServiceImg/serviceBackground.jpeg'
 import { Truck, Utensils } from 'lucide-react';
