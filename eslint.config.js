@@ -20,6 +20,13 @@ export default [
   // ✅ Next.js compat config
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
 
+  // ✅ Custom rule overrides
+  {
+    rules: {
+      '@typescript-eslint/no-var-requires': 'off', // 👈 disables require() import error
+    },
+  },
+
   // ✅ Your ignores (merged)
   {
     ignores: [
