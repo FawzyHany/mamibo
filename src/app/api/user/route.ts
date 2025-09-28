@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-export const userSchema = z.object({
+ const userSchema = z.object({
   email: z.string().email("Invalid email address"),
   firstName: z.string(),
   lastName: z.string().optional(),

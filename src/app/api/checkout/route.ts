@@ -5,7 +5,7 @@ import { z } from "zod";
 import { PaymentType } from "@/generated/prisma";
 
 // Zod schema for checkout POST body
-export const checkoutSchema = z.object({
+ const checkoutSchema = z.object({
   cartId: z.string(),
   address: z.object({
     firstName: z.string(),
