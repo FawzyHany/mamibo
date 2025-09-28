@@ -68,10 +68,16 @@ export async function PATCH(
     });
 
     return NextResponse.json(updated);
-  } catch (err: any) {
-    console.error(err);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    } else {
+      console.error("Unknown error:", err);
+    }
+  
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
+  
 }
 
 
@@ -121,8 +127,14 @@ export async function DELETE(
     await prisma.cartItem.delete({ where: { id: itemId } });
 
     return NextResponse.json({ message: "Item deleted" });
-  } catch (err: any) {
-    console.error(err);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    } else {
+      console.error("Unknown error:", err);
+    }
+  
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
+  
 }

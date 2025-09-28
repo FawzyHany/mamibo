@@ -48,7 +48,7 @@ export async function POST(req: Request) {
       },
     });
     console.log("New user created:", newUser);
-    const {password:unvinsiblePass, ...rest}=newUser;
+    const {password:_password, ...rest}=newUser;
     return NextResponse.json({ rest });
   } catch (error) {
     console.error("Registration error:", error);
@@ -111,7 +111,13 @@ export async function PATCH(req: Request) {
     });
 
     return NextResponse.json(updatedUser);
-  } catch (err) {
-    return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    } else {
+      console.error("Unknown error:", err);
+    }
+  
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

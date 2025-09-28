@@ -50,11 +50,13 @@ export default function SecuritySection() {
       });
       setSuccess("Password updated successfully!");
       form.reset();
-    } catch (err: any) {
-      form.setError("currentPassword", {
-        type: "manual",
-        message: err.message || "Failed to update password",
-      });
+    }  catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("Unknown error:", err);
+      }
+    
     }
   }
 

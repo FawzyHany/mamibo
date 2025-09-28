@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Order, OrderAddress, OrderItem, UserAddress } from "@/generated/prisma"
+import { Order, OrderAddress, OrderItem } from "@/generated/prisma"
 
 
 export type OrderWithDetails = Order & {

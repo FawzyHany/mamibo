@@ -3,7 +3,7 @@ import React from 'react'
 
 import type { StaticImageData } from "next/image";
 import { cn } from "@/lib/utils";
-import { Truck } from 'lucide-react';
+
 
 
 type Props={
@@ -21,7 +21,6 @@ export const ServiceCard:React.FC<Props> = ({
   Cardtitle,
   icon,
   description,
-  moreDiscription,
   button
 }) => {
   return (

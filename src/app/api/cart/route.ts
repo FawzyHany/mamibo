@@ -119,13 +119,13 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(updatedCart);
-  } catch (err: any) {
-    console.error(err);
-
-    if (err.name === "ZodError") {
-      return NextResponse.json({ error: "Invalid input", issues: err.errors }, { status: 400 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    } else {
+      console.error("Unknown error:", err);
     }
-
+  
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
@@ -136,9 +136,13 @@ export async function POST(req: Request) {
 // -----------------
 // Helper: Cart Totals
 // -----------------
-function calculateCartTotals(items: any[]) {
+type CartItem = {
+  lineTotal: number | { toNumber(): number };
+};
+
+function calculateCartTotals(items: CartItem[]) {
   const subtotal = items.reduce(
-    (sum, item) => sum + (item.lineTotal.toNumber?.() ?? item.lineTotal),
+    (sum, item) => sum + (item.lineTotal as any).toNumber?.() ?? (item.lineTotal as number),
     0
   );
 
@@ -157,7 +161,8 @@ function calculateCartTotals(items: any[]) {
   };
 }
 
-export async function GET(req: Request) {
+
+export async function GET() {
   try {
   
     const session = await getServerSession(authOptions);
@@ -212,8 +217,13 @@ export async function GET(req: Request) {
         ...totals,
       },
     });
-  } catch (err: any) {
-    console.error(err);
-    return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    } else {
+      console.error("Unknown error:", err);
+    }
+  
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

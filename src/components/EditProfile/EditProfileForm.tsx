@@ -49,8 +49,13 @@ export default function EditProfileForm({ profile, onClose }: EditProfileFormPro
 
       alert("Profile updated successfully!");
       onClose();
-    } catch (err: any) {
-      setError(err.message || "Something went wrong");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("Unknown error:", err);
+      }
+    
     }
   };
 

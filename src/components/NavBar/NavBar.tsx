@@ -18,12 +18,7 @@ import { LogoNavBar } from "./logo"; // logo
 import { MobileMenuDrawer } from "./MobileMenuDrawer"; // new hamburger menu drawer
 import { useLocale } from 'next-intl';
 import Link from "next/link";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+
 
 export function NavigationMenuDemo() {
   const categories = [

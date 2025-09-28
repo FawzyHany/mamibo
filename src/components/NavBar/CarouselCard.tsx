@@ -1,9 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
-import MenuPic from '../../../public/CarouselPics/MenuPic.jpg'
 import { cn } from "@/lib/utils";
 import type { StaticImageData } from "next/image";
-import { Button } from '../ui/button';
 import Link from 'next/link';
 
 
@@ -23,7 +21,6 @@ type Props={
 export const CarouselCard:React.FC<Props> = ({
   title,
   backgroundImg,
-  icon,
   description,
   button,
   customClass,

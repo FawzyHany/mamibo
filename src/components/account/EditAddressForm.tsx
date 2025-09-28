@@ -35,12 +35,13 @@ const formSchema = z.object({
 })
 
 type FormValues = z.infer<typeof formSchema>
+ type AddressWithId = FormValues & { id: string };
 
 export function EditAddressForm({
   address,
   onSuccess,
 }: {
-  address?: any
+  address?: AddressWithId; 
   onSuccess: () => void
 }) {
   const form = useForm<FormValues>({
@@ -57,7 +58,7 @@ export function EditAddressForm({
       lat: address?.lat ?? 0,
       lng: address?.lng ?? 0,
       isDefault: address?.isDefault ?? false,
-      password: "",
+      // password: "",
     },
   })
 

@@ -9,7 +9,7 @@ import { EditAddressForm } from './EditAddressForm'
 const AddressesSection = () => {
   const { data: addresses, isLoading, error } = useUserAddresses()
   const [open, setOpen] = useState(false)
-  const [selectedAddress, setSelectedAddress] = useState<any | null>(null)
+  const [selectedAddress, setSelectedAddress] = useState<unknown | null>(null)
 
   if (isLoading) return <p>Loading addresses...</p>
   if (error) return <p className="text-red-500">Failed to load addresses</p>
@@ -72,10 +72,12 @@ const AddressesSection = () => {
               {selectedAddress ? "Edit Address" : "Add Address"}
             </DialogTitle>
           </DialogHeader>
-          <EditAddressForm
-            address={selectedAddress}
-            onSuccess={() => setOpen(false)}
-          />
+          {typeof selectedAddress === 'object' && selectedAddress !== null && (
+  <EditAddressForm
+    address={selectedAddress as any}
+    onSuccess={() => setOpen(false)}
+  />
+)}
         </DialogContent>
       </Dialog>
     </div>

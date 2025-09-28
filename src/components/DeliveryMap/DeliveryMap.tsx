@@ -5,19 +5,23 @@ import {
   TileLayer,
   Marker,
   useMapEvents,
-  useMap,
 } from "react-leaflet";
 import { LeafletMouseEvent } from "leaflet";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button"; // using shadcn button
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-
+import { Map as LeafletMap } from 'leaflet';
 // Fix default icon paths
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+interface IconDefaultWithGetIconUrl extends L.Icon.Default {
+  _getIconUrl?: () => string;
+}
+
+delete (L.Icon.Default.prototype as IconDefaultWithGetIconUrl)._getIconUrl;
+
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x.src,
@@ -44,7 +48,8 @@ export default function DeliveryMap({
   defaultCenter = [30.0444, 31.2357],
 }: Props) {
   const [position, setPosition] = useState<[number, number] | null>(null);
-  const mapRef = useRef<any>(null);
+
+  const mapRef = useRef<LeafletMap | null>(null);
 
   // Handle manual map clicks
   const MapClickHandler = () => {

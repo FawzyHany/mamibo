@@ -1,5 +1,5 @@
 // hooks/useVerifyPassword.ts
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 export async function verifyPassword(password: string) {
   const res = await fetch("/api/auth/verify-password", {
     method: "POST",

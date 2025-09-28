@@ -17,7 +17,7 @@ export function useReverseGeocoding(lat: number | null, lng: number | null) {
         const data = await res.json();
         setAddress(data.display_name || "Unknown location");
       } catch (err) {
-        setError("Failed to fetch address");
+        setError(`${err}: Failed to fetch address`);
       } finally {
         setLoading(false);
       }
