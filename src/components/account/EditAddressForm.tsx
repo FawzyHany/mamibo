@@ -58,7 +58,7 @@ export function EditAddressForm({
       lat: address?.lat ?? 0,
       lng: address?.lng ?? 0,
       isDefault: address?.isDefault ?? false,
-      // password: "",
+      password: "",
     },
   })
 
@@ -82,7 +82,8 @@ export function EditAddressForm({
         return
       }
 
-      const { password, ...dataToSend } = values
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password: _password, ...dataToSend } = values;
 
       if (address) {
         await updateAddress({ id: address.id, data: dataToSend })

@@ -74,6 +74,7 @@ const AddressesSection = () => {
           </DialogHeader>
           {typeof selectedAddress === 'object' && selectedAddress !== null && (
   <EditAddressForm
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
     address={selectedAddress as any}
     onSuccess={() => setOpen(false)}
   />

@@ -5,6 +5,7 @@ import { z } from "zod";
 import { getOrCreateSessionId } from "@/lib/session";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { Prisma } from "@/generated/prisma";
 
 const AddToCartRequest = z.object({
   menuItemId: z.string(),
@@ -82,14 +83,14 @@ export async function POST(req: Request) {
       where: {
         cartId: cart.id,
         menuItemId,
-        sizeOptionId: sizeOptionId ?? null,
-        crustOptionId: crustOptionId ?? null,
+        sizeOptionId: sizeOptionId,
+        crustOptionId: crustOptionId,
       },
     });
 
-    let cartItem;
+
     if (existingItem) {
-      cartItem = await prisma.cartItem.update({
+       await prisma.cartItem.update({
         where: { id: existingItem.id },
         data: {
           quantity: existingItem.quantity + quantity,
@@ -97,7 +98,7 @@ export async function POST(req: Request) {
         },
       });
     } else {
-      cartItem = await prisma.cartItem.create({
+      await prisma.cartItem.create({
         data: {
           cartId: cart.id,
           menuItemId,
@@ -136,15 +137,13 @@ export async function POST(req: Request) {
 // -----------------
 // Helper: Cart Totals
 // -----------------
-type CartItem = {
-  lineTotal: number | { toNumber(): number };
-};
 
-function calculateCartTotals(items: CartItem[]) {
-  const subtotal = items.reduce(
-    (sum, item) => sum + (item.lineTotal as any).toNumber?.() ?? (item.lineTotal as number),
-    0
-  );
+
+function calculateCartTotals(items: { lineTotal: Prisma.Decimal }[]) {
+  const subtotal = items.reduce((sum, item) => {
+    return sum + item.lineTotal.toNumber();
+  }, 0);
+
 
   const discount = 0;
   const taxRate = 0.1;
