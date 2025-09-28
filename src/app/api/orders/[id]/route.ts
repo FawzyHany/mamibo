@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{ itemId: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
@@ -23,9 +23,9 @@ export async function GET(
 
   const isAdminOrStaff = user.role === "ADMIN" || user.role === "STAFF";
 
-  const { itemId } = await params;
+  const { id } = await params;
   const order = await prisma.order.findUnique({
-    where: { id: itemId },
+    where: { id: id },
     include: {
       address: true,
       items: true,
