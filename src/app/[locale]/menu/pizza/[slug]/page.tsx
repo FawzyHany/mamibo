@@ -1,22 +1,21 @@
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import { ProductDetail } from "@/components/ProductDetail/ProductDetail"
+import { AppBreadcrumb } from "@/components/Breadcrumb/Breadcrumb";
+
 
 type PizzaDetailPageProps = {
-  params: Promise<{
+  params: {
     locale: string;
     slug: string;
-  }>;
+  };
 }
 
 export default async function PizzaDetailPage({ params }: PizzaDetailPageProps) {
-  const {  slug } = await params;
+  const { slug } =  params;
   const product = await prisma.menuItem.findFirst({
     where: {
       name: { equals:slug.replace(/-/g, " "), mode: "insensitive" },
-    },
-    include: {
-      // If you later connect sizes/crusts tables, fetch them here
     },
   });
 
@@ -26,7 +25,8 @@ export default async function PizzaDetailPage({ params }: PizzaDetailPageProps) 
       size: true,
     },
   });
-  
+  console.log(`product: ${JSON.stringify(sizes)}`);
+
   const crusts = await prisma.menuItemCrust.findMany({
     select: {
       id: true,
@@ -39,6 +39,14 @@ export default async function PizzaDetailPage({ params }: PizzaDetailPageProps) 
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <div className="pb-5">
+       <AppBreadcrumb
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Menu", href: "/menu" },
+          { label: "Pizza",  href: "/menu/pizza"},
+          {label: `${slug.charAt(0).toUpperCase()}${slug.slice(1)}`,  href: `/menu/pizza/${slug}`}
+        ]}/></div>
       <ProductDetail
       productId={product.id}
         imageUrl={product.imageUrl ?? "/images/placeholder.jpg"}

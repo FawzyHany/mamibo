@@ -21,3 +21,12 @@ export const checkoutSchema = z.object({
 export type CheckoutInput = z.infer<typeof checkoutSchema>;
 
 
+//Cart Schema
+export const AddToCartRequest = z.object({
+  menuItemId: z.string(),
+  sizeOptionId: z.string().nullable().optional(),
+  crustOptionId: z.string().nullable().optional(),
+  quantity: z.number(),
+});
+
+export type AddCartItemInput = z.infer<typeof AddToCartRequest>;

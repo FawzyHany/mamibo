@@ -1,22 +1,18 @@
 // app/api/cart/route.ts
 import { NextResponse } from "next/server";
 import {prisma} from "@/lib/prisma";
-import { z } from "zod";
 import { getOrCreateSessionId } from "@/lib/session";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Prisma } from "@/generated/prisma";
+import type { Cart } from "@/generated/prisma";
+import { AddToCartRequest } from "@/lib/schemas";
 
-const AddToCartRequest = z.object({
-  menuItemId: z.string(),
-  sizeOptionId: z.string().nullable().optional(),
-  crustOptionId: z.string().nullable().optional(),
-  quantity: z.number(),
-});
 
 export async function POST(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);  
+    console.log("Session:", session);
     let userId: string | null = null;
     let sessionId: string | null = null;
 
@@ -35,13 +31,18 @@ export async function POST(req: Request) {
     } else {
       sessionId = await getOrCreateSessionId();
     }
-
     const body = await req.json();
-    const parsed = AddToCartRequest.parse(body);
-    const { menuItemId, sizeOptionId, crustOptionId, quantity } = parsed;
+    const result = AddToCartRequest.safeParse(body);
+   
+    if (!result.success) {
+      return Response.json({ error: "Invalid request", details: result.error.format() }, { status: 400 });
+    }
+  
+    const { menuItemId, sizeOptionId, crustOptionId, quantity } = result.data;
+    
 
     // 🔄 Find or create cart based on userId or sessionId
-    let cart;
+    let cart: Cart|null=null;
 
     if (userId) {
       cart = await prisma.cart.findFirst({ where: { userId } });
@@ -205,7 +206,7 @@ export async function GET() {
       console.log("⚠️ No cart found for this session");
       return NextResponse.json({ error: 'Cart not found' }, { status: 404 });
     }
-
+    
     const totals = calculateCartTotals(cart.items);
 
     return NextResponse.json({

@@ -17,6 +17,8 @@ type ProductDetailProps = {
   sizeOptions?: { id: string; size: string }[];    // optional
   crustOptions?: { id: string; crust: string }[];  // Includes ID
 };
+
+
 export function ProductDetail({
   productId,
   imageUrl,
@@ -29,6 +31,8 @@ export function ProductDetail({
   const [selectedSizeId, setSelectedSizeId] = useState<string | null>(null);
   const [selectedCrustId, setSelectedCrustId] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
+  
+
 
   const addToCart = useAddCartItem();
 
@@ -145,15 +149,15 @@ export function ProductDetail({
 {(sizeOptions.length > 0 || crustOptions.length > 0)?<Button
         onClick={handleAddToCartPizza}
         disabled={addToCart.isPending}
-        className="w-full"
+        className="w-full cursor-pointer"
       >
         {addToCart.isPending ? "Adding..." : "Add to Cart"}
       </Button>:<Button
         onClick={handleAddToCart}
         disabled={addToCart.isPending}
-        className="w-full"
+        className="w-full cursor-pointer"
       >
-        {addToCart.isPending ? "Adding..." : "Add to Cart"}
+        {addToCart.isPending  ? "Adding..." : "Add to Cart"}
       </Button>}
       
       </CardContent>

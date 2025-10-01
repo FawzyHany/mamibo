@@ -155,11 +155,11 @@ export function CartDropdown() {
         <span>{cart.subtotal.toFixed(2)} LE</span>
       </div>
       <div className="flex justify-center gap-2 mt-2 ">
-        <Button className="w-[80%]" size="sm" variant={"default"}>
-         
-          <a href="/checkout">
-          Checkout</a>
-        </Button>
+       
+         <div className="flex justify-center w-full p-1">
+          <a className="w-[80%] bg-[var(--primary-color2))] text-white p-1 text-center font-bold rounded-lg" href="/checkout">
+          Checkout</a></div>
+       
       </div>
     </div>
   )}

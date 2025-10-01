@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import { ProductDetail } from "@/components/ProductDetail/ProductDetail"
+import { AppBreadcrumb } from "@/components/Breadcrumb/Breadcrumb";
 
 type BeverageDetailPageProps = {
   params: Promise<{
@@ -25,6 +26,15 @@ export default async function BeveragDetailPage({ params }: BeverageDetailPagePr
 
   return (
     <div className="container mx-auto px-4 py-8">
+         <div className="pb-5">
+      <AppBreadcrumb
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Menu", href: "/menu" },
+          { label: "Beverage", href: "/menu/beverages" },
+          {label: `${slug.charAt(0).toUpperCase()}${slug.slice(1)}`,  href: `/menu/beverages${slug}`}
+        ]}
+      /></div>
       <ProductDetail
       productId={product.id}
         imageUrl={product.imageUrl ?? "/images/placeholder.jpg"}
