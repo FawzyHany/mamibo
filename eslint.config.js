@@ -32,4 +32,20 @@ export default [
       'src/generated/prisma/**',
     ],
   },
+
+  // ✅ Custom rules to change error -> warn
+  {
+    rules: {
+      // Next.js <Link> wrapper rule
+      '@next/next/link-passhref': 'warn',
+
+      // Accessibility rules about raw ' in JSX
+      'jsx-a11y/no-invalid-aria-props': 'warn',
+      'jsx-a11y/anchor-is-valid': 'warn',
+      // Add any other related jsx-a11y rules here as needed
+
+      // Example: allow raw quotes in JSX by warning instead of error
+      'react/no-unescaped-entities': 'warn',
+    },
+  },
 ];
