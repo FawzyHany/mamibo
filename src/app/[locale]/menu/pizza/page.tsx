@@ -5,7 +5,7 @@ import { AppBreadcrumb } from "@/components/Breadcrumb/Breadcrumb"
 
 
 export default async function PizzaPage() {
-  // const t = useTranslations();
+
   // 1. Query category "Pizza" and its items
   const pizzaCategory = await prisma.category.findUnique({
     where: { name: "Pizza" },

@@ -1,21 +1,18 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { UpdateUserSchema } from "@/app/api/user/route";
+import z from "zod";
 
 // ----------------------
 // Types
 // ----------------------
-export type UserProfile = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-};
 
+export type UserProfile = z.infer<typeof UpdateUserSchema>;
 // ----------------------
 // GET User Profile
 // ----------------------
-const fetchUserProfile = async (): Promise<UserProfile> => {
+const fetchUserProfile = async (): Promise< UserProfile> => {
   const res = await fetch("/api/user", {
     method: "GET",
     headers: {
@@ -45,7 +42,6 @@ export type UpdateUserProfileInput = {
   firstName?: string;
   lastName?: string;
   email?: string;
-  password?: string; // manually added
 };
 
 const updateUserProfile = async (updates: UpdateUserProfileInput) => {

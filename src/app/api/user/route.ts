@@ -85,6 +85,13 @@ export async function GET() {
 }
 
 // PATCH /api/user/profile
+export const UpdateUserSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Invalid email"),
+});
+
+
 export async function PATCH(req: Request) {
   const session = await getServerSession(authOptions);
 
@@ -93,7 +100,14 @@ export async function PATCH(req: Request) {
   }
 
   const body = await req.json();
-  const { firstName, lastName, email } = body;
+
+  const parse = UpdateUserSchema.safeParse(body);
+
+  if (!parse.success) {
+    return NextResponse.json({ error: parse.error.format() }, { status: 400 });
+  }
+
+  const { firstName, lastName, email } = parse.data;
 
   try {
     

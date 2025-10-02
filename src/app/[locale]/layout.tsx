@@ -49,8 +49,8 @@ export default async function RootLayout({ children, params }: Props) {
       <body className={`${rubik.variable} ${playfairDisplay.variable} antialiased`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
         <ReactQueryProvider>
+        <Providers>
           <NavigationMenuDemo />
-          <Providers>
           {children}
           </Providers>
           <Toaster />

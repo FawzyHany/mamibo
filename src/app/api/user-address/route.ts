@@ -6,7 +6,7 @@ import { z } from "zod";
 
 
 // Zod schema for validation
-const userAddressSchema = z.object({
+export const userAddressSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   phone: z.string(),
@@ -42,6 +42,11 @@ export async function GET() {
 
   return NextResponse.json(addresses);
 }
+
+
+
+
+
 
 // ✅ POST create new address
 export async function POST(req: Request) {

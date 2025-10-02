@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { ProductDetail } from "@/components/ProductDetail/ProductDetail"
 import { AppBreadcrumb } from "@/components/Breadcrumb/Breadcrumb";
 
+
 interface AppetizerDetailPageProps {
   params: Promise<{
     locale: string;
@@ -28,7 +29,7 @@ export default async function AppetizerDetailPage({ params }: AppetizerDetailPag
           { label: "Home", href: "/" },
           { label: "Menu", href: "/menu" },
           { label: "Appetizers",  href: "/menu/appetizers" },
-          {label: `${slug.charAt(0).toUpperCase()}${slug.slice(1)}`,  href: `/menu/appetizers${slug}`}
+          {label: `${slug.charAt(0).toUpperCase()}${slug.slice(1)}`,  href: `/menu/appetizers/${slug}`}
         ]}/></div>
       <ProductDetail
         productId={product.id}

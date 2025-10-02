@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { UserProfile } from "@/hooks/useUserProfile";
+import { useTranslations } from "next-intl";
 
 type EditProfileFormProps = {
   profile: UserProfile;
@@ -21,6 +22,7 @@ type EditProfileFormProps = {
 };
 
 export default function EditProfileForm({ profile, onClose }: EditProfileFormProps) {
+  const t =useTranslations();
   const [form, setForm] = useState(profile);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -62,13 +64,13 @@ export default function EditProfileForm({ profile, onClose }: EditProfileFormPro
   return (
     <Card className="max-w-md">
       <CardHeader>
-        <CardTitle>Edit Profile</CardTitle>
+        <CardTitle>{t("account.editprofile")}</CardTitle>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           {/* First name */}
           <div className="space-y-2">
-            <Label htmlFor="firstName">First Name</Label>
+            <Label htmlFor="firstName">{t("ContactUsForm.firstname")}</Label>
             <Input
               id="firstName"
               value={form.firstName}
@@ -79,53 +81,54 @@ export default function EditProfileForm({ profile, onClose }: EditProfileFormPro
 
           {/* Last name */}
           <div className="space-y-2">
-            <Label htmlFor="lastName">Last Name</Label>
+            <Label htmlFor="lastName">{t("ContactUsForm.lastname")}</Label>
             <Input
               id="lastName"
               value={form.lastName || ""}
               onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-              placeholder="Last name"
+              placeholder={t("ContactUsForm.lastname")}
             />
           </div>
 
           {/* Email */}
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("ContactUsForm.email")}</Label>
             <Input
               id="email"
               type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              placeholder="Email"
+              placeholder={t("ContactUsForm.email")}
             />
           </div>
 
           {/* Password confirmation */}
           <div className="space-y-2">
-            <Label htmlFor="password">Confirm Password</Label>
+            <Label htmlFor="password">{t("account.confirmpassword")}</Label>
             <Input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter current password"
+              placeholder={t("account.password")}
             />
           </div>
 
           {error && <p className="text-sm text-red-500">{error}</p>}
         </CardContent>
 
-        <CardFooter className="flex gap-2">
+        <CardFooter className="flex gap-2 m-3">
           <Button
             type="submit"
+            className="cursor-pointer"
             disabled={updateProfile.isPending || verifyPassword.isPending}
           >
             {updateProfile.isPending || verifyPassword.isPending
-              ? "Saving..."
-              : "Save Changes"}
+              ? t("account.saving")
+              : t("account.save")}
           </Button>
-          <Button type="button" variant="outline" onClick={onClose}>
-            Cancel
+          <Button className="cursor-pointer" type="button" variant="outline" onClick={onClose}>
+           {t("account.cancel")}
           </Button>
         </CardFooter>
       </form>

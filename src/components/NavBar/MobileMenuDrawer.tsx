@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { cn } from "../../lib/utils";
 import { signOut } from "next-auth/react";
+import { DropDownNavBar } from "./DropDown";
 
 export const MobileMenuDrawer = () => {
 
@@ -79,19 +80,13 @@ export const MobileMenuDrawer = () => {
           </Link>
 
              {/* Account Collapsible Menu Section */}
-          <button
-            onClick={toggleAccmenu}
-            className="flex items-center justify-between w-full hover:underline focus:outline-none hover:cursor-pointer"
-          >
-            <span>{t("navbar.account")}</span>
-            {isAccmenuOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-          </button>
+             <DropDownNavBar/>
 
           {isAccmenuOpen && (
             <div className="ml-4 flex flex-col gap-2 text-base text-gray-700">
               <Link href="/account">{t("navbar.account")}</Link>
               <Button className="cursor-pointer" variant="destructive" onClick={() =>signOut({ callbackUrl: "/" }) 
-}>{t("navbar.signout")}</Button>
+          }>{t("navbar.signout")}</Button>
               {/* Add more submenu items as needed */}
             </div>
           )}

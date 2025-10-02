@@ -12,10 +12,10 @@ import {
 import { cn } from "../../lib/utils";
 import LanguageToggle from "@/components/LanguageToggle/LanguageToggle";
 import { useTranslations } from "next-intl";
-import { CartDropdown } from "./CartDropdown"; // cart drawer
-import { DropDownNavBar } from "./DropDown"; // user profile dropdown
-import { LogoNavBar } from "./logo"; // logo
-import { MobileMenuDrawer } from "./MobileMenuDrawer"; // new hamburger menu drawer
+import { CartDropdown } from "@/components/NavBar/CartDropdown"; // cart drawer
+import { DropDownNavBar } from "@/components/NavBar/DropDown"; // user profile dropdown
+import { LogoNavBar } from "@/components/NavBar/logo"; // logo
+import { MobileMenuDrawer } from "@/components/NavBar/MobileMenuDrawer"; // new hamburger menu drawer
 import { useLocale } from 'next-intl';
 import Link from "next/link";
 
@@ -139,7 +139,7 @@ export function NavigationMenuDemo() {
 
       {/* Right: Toggles and Icons */}
       <div className="flex items-center gap-4">
-        <LanguageToggle />
+        <LanguageToggle/>
 
         {/* Desktop: profile dropdown */}
         <div className={cn("hidden lg:flex items-center ")}>

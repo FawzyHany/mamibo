@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { useCreateAddress, useUpdateAddress } from "@/hooks/useUserAddress"
-import { useVerifyPassword } from "@/hooks/useVerifyPassword"
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useCreateAddress, useUpdateAddress } from "@/hooks/useUserAddress";
+import type { UserAddress, UserAddressInput } from "@/lib/schemas";
+import { userAddressSchema } from "@/lib/schemas";
 import {
   Form,
   FormField,
@@ -12,152 +12,91 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { useState } from "react"
-import LocationPicker from "@/components/DeliveryMap/LocationPicker"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import LocationPicker from "../DeliveryMap/LocationPicker";
+import { useTranslations } from "next-intl";
 
-const formSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string(),
-  phone: z.string().min(5, "Phone is required"),
-  address: z.string().min(3, "Address is required"),
-  building: z.string().optional(),
-  floor: z.string().optional(),
-  flat: z.string().optional(),
-  landmark: z.string().optional(),
-  lat: z.number(),
-  lng: z.number(),
-  isDefault: z.boolean(),
-  password: z.string().min(6, "Password is required"),
-})
+interface AddressFormProps {
+  address?: UserAddress & { id: string };
+  onSuccess: () => void;
+}
 
-type FormValues = z.infer<typeof formSchema>
- type AddressWithId = FormValues & { id: string };
-
-export function EditAddressForm({
-  address,
-  onSuccess,
-}: {
-  address?: AddressWithId; 
-  onSuccess: () => void
-}) {
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+export function AddressForm({ address, onSuccess }: AddressFormProps) {
+  const t = useTranslations();
+  const form = useForm<UserAddressInput>({
+    resolver: zodResolver(userAddressSchema),
     defaultValues: {
-      firstName: address?.firstName || "",
-      lastName: address?.lastName || "",
-      phone: address?.phone || "",
-      address: address?.address || "",
-      building: address?.building || "",
-      floor: address?.floor || "",
-      flat: address?.flat || "",
-      landmark: address?.landmark || "",
-      lat: address?.lat ?? 0,
-      lng: address?.lng ?? 0,
+      firstName: address?.firstName,
+      lastName: address?.lastName,
+      phone: address?.phone,
+      address: address?.address,
+      building: address?.building,
+      floor: address?.floor,
+      flat: address?.flat,
+      landmark: address?.landmark,
+      lat: address?.lat,
+      lng: address?.lng,
       isDefault: address?.isDefault ?? false,
-      password: "",
     },
-  })
+  });
 
-  const { mutateAsync: createAddress } = useCreateAddress()
-  const { mutateAsync: updateAddress } = useUpdateAddress()
-  const { mutateAsync: verifyPassword } = useVerifyPassword()
+  const { mutateAsync: createAddress, isPending: creating } = useCreateAddress();
+  const { mutateAsync: updateAddress, isPending: updating } = useUpdateAddress();
 
-  const [loading, setLoading] = useState(false)
-
-  async function onSubmit(values: FormValues) {
-    setLoading(true)
-    try {
-      const isValid = await verifyPassword(values.password)
-
-      if (!isValid) {
-        form.setError("password", {
-          type: "manual",
-          message: "Incorrect password",
-        })
-        setLoading(false)
-        return
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password: _password, ...dataToSend } = values;
-
-      if (address) {
-        await updateAddress({ id: address.id, data: dataToSend })
-      } else {
-        await createAddress(dataToSend)
-      }
-
-      onSuccess()
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setLoading(false)
+  async function onSubmit(values: UserAddressInput) {
+    if (address) {
+      await updateAddress({ id: address.id, data: values });
+    } else {
+      await createAddress(values);
     }
+    onSuccess();
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {/* Location picker */}
-        <div>
-          <FormLabel>Delivery Location</FormLabel>
-          <LocationPicker
-            onConfirm={(lat, lng) => {
-              form.setValue("lat", lat)
-              form.setValue("lng", lng)
-            }}
-          />
-          {form.watch("lat") && form.watch("lng") && (
-            <p className="text-xs text-gray-500 mt-1">
-              📍 {form.watch("lat")}, {form.watch("lng")}
-            </p>
+        {/* First Name */}
+        <FormField
+          control={form.control}
+          name={"firstName"}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("ContactUsForm.firstname")}</FormLabel>
+              <FormControl>
+                <Input placeholder="" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-        </div>
+        />
 
-        {/* First name & Last name */}
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>First Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="John" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        {/* Last Name */}
+        <FormField
+          control={form.control}
+          name="lastName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("ContactUsForm.lastname")}</FormLabel>
+              <FormControl>
+                <Input  {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Last Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Doe" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* Phone number */}
+        {/* Phone */}
         <FormField
           control={form.control}
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone Number</FormLabel>
+              <FormLabel>{t("ContactUsForm.phone")}</FormLabel>
               <FormControl>
-                <Input placeholder="+20123456789" {...field} />
+                <Input  {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -170,76 +109,98 @@ export function EditAddressForm({
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address</FormLabel>
+              <FormLabel>{t("account.address")}</FormLabel>
               <FormControl>
-                <Input placeholder="123 Main St" {...field} />
+                <Input  {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {/* Building & Floor */}
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="building"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Building</FormLabel>
-                <FormControl>
-                  <Input placeholder="10B" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="floor"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Floor</FormLabel>
-                <FormControl>
-                  <Input placeholder="2" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        {/* Building */}
+        <FormField
+          control={form.control}
+          name="building"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("account.building")}</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        {/* Flat & Landmark */}
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="flat"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Flat</FormLabel>
-                <FormControl>
-                  <Input placeholder="12A" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="landmark"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Landmark</FormLabel>
-                <FormControl>
-                  <Input placeholder="Near mall" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        {/* Floor */}
+        <FormField
+          control={form.control}
+          name="floor"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("account.floor")}</FormLabel>
+              <FormControl>
+                <Input  {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        {/* ✅ isDefault checkbox */}
+        {/* Flat */}
+        <FormField
+          control={form.control}
+          name="flat"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("account.flat")}</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Landmark */}
+        <FormField
+          control={form.control}
+          name="landmark"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("account.landmark")}</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Latitude */}
+       <div>
+  <FormLabel>{t("account.location")}</FormLabel>
+  <LocationPicker
+    onConfirm={(lat, lng) => {
+      form.setValue("lat", lat);
+      form.setValue("lng", lng);
+      form.trigger(["lat", "lng"]);
+    }}
+  />
+  {form.watch("lat") && form.watch("lng") && (
+    <p className="text-xs text-gray-500 mt-1">
+      📍 {form.watch("lat")}, {form.watch("lng")}
+    </p>
+  )}
+  {(form.formState.errors.lat || form.formState.errors.lng) && (
+    <p className="text-sm text-red-500 mt-1">
+      Location is required
+    </p>
+  )}
+</div>
+
+        {/* Default checkbox */}
         <FormField
           control={form.control}
           name="isDefault"
@@ -251,30 +212,15 @@ export function EditAddressForm({
                   onCheckedChange={(checked) => field.onChange(!!checked)}
                 />
               </FormControl>
-              <FormLabel className="mb-0">Set as default address</FormLabel>
+              <FormLabel className="mb-0">{t("account.default")}</FormLabel>
             </FormItem>
           )}
         />
 
-        {/* Password */}
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="••••••••" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button type="submit" disabled={loading} className="w-full">
-          {loading ? "Saving..." : "Save"}
+        <Button type="submit" disabled={creating || updating} className=" w-full">
+          {creating || updating ? "Saving..." : t("account.saveaddress")}
         </Button>
       </form>
     </Form>
-  )
+  );
 }

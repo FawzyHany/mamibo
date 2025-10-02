@@ -1,24 +1,7 @@
 // hooks/useUserAddress.ts
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { UserAddress, UserAddressInput } from "@/lib/schemas";
 
-
-// lib/api/userAddress.ts
-export type UserAddress = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  address: string;
-  building?: string;
-  floor?: string;
-  flat?: string;
-  landmark?: string;
-  lat: number;
-  lng: number;
-  isDefault: boolean;
-  createdAt: string;
-  updatedAt: string;
-};
 
 export async function fetchUserAddresses(): Promise<UserAddress[]> {
   const res = await fetch("/api/user-address", { credentials: "include" });
@@ -26,7 +9,7 @@ export async function fetchUserAddresses(): Promise<UserAddress[]> {
   return res.json();
 }
 
-export async function createUserAddress(data: Omit<UserAddress, "id" | "createdAt" | "updatedAt">) {
+export async function createUserAddress(data: UserAddressInput) {
   const res = await fetch("/api/user-address", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -37,7 +20,7 @@ export async function createUserAddress(data: Omit<UserAddress, "id" | "createdA
   return res.json();
 }
 
-export async function updateUserAddress(id: string, data: Partial<UserAddress>) {
+export async function updateUserAddress(id: string, data: Partial<UserAddressInput>) {
   const res = await fetch(`/api/user-address/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -81,7 +64,7 @@ export function useCreateAddress() {
 export function useUpdateAddress() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<UserAddress> }) =>
+    mutationFn: ({ id, data }: { id: string; data: Partial<UserAddressInput> }) =>
       updateUserAddress(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userAddresses"] });

@@ -6,6 +6,8 @@
     "contactus": "Contact Use",
     "menu": "Menu",
     "myaccount": "My Account",
+    "login": "Log in",
+    "signup": "Sign up",
     "account": "Account",
     "profile": "Profile",
     "signout": "Sign Out",
@@ -21,12 +23,41 @@
     "name":"Name",
     "email": "Email",
     "phone": "Phone",
+    "firstname": "First Name",
+    "lastname": "Last Name",
     "message": "Your Message...",
     "button": "Send Message"
   },
 
   "menu":{
     "description":"Discover authentic Italian dishes by category"
+  },
+
+  "account":{
+    "profile": "Profile",
+    "address": "Address",
+    "orders": "Orders",
+    "password": "Password",
+    "confirmpassword": "Confirm Password",
+    "signout": "Sign out",
+    "loadingprofile":"Loading profile...",
+    "noprofile": "No profile found",
+    "profileinfo": "Profile Info",
+    "edit":"Edit",
+    "editprofile": "Edit Profile",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "building": "Building",
+    "floor": "Floor",
+    "flat": "Flat",
+    "landmark": "Landmark",
+    "location":"Delivery Location",
+    "newaddress":"Add Address",
+    "default": "Default Address",
+    "delete": "Delete",
+    "deliverhere": "Deliver Here",
+    "saveaddress": "Save Address"
   }
  
 }

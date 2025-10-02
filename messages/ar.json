@@ -7,6 +7,8 @@
     "menu": "القائمة",
     "myaccount": "حسابي",
     "account": "الحساب",
+    "login": "تسجيل",
+    "signup": "انشاء حساب",
     "profile": "الملف الشخصي",
     "signout": "الخروج",
     "pizza":"بيتزا",
@@ -22,6 +24,8 @@
     "successMessage": "تم ارسال رسالتك",
     "name":"الاسم",
     "email": "الايميل",
+    "firstname": "الاسم الاول",
+    "lastname": "اسم العائلة",
     "phone": "رقم الهاتف",
     "message": "رسالتك...",
     "button": "ارسل"
@@ -29,5 +33,32 @@
 
   "menu":{
     "description":"اكتشف الأطباق الإيطالية الأصيلة"
+  },
+
+  "account":{
+    "profile": "الملف الشخصي",
+    "address": "العنوان",
+    "orders": "الطلبات",
+    "password": "كلمة المرور",
+    "confirmpassword": "تاكيد كلمة المرور",
+    "signout": "الخروج",
+    "loadingprofile":"تحميل البروفايل...",
+    "noprofile": "لم يتم العثور على حساب",
+    "profileinfo": "معلومات الحساب الشخصي",
+    "edit":"تعديل",
+    "editprofile": "تعديل الحساب",
+    "save": "حفظ",
+    "saving": "حفظ...",
+    "cancel": "الغاء",
+    "building": "رقم المبنى",
+    "floor": "الدور",
+    "flat": "الشقة",
+    "landmark": "علامة مميزة",
+    "location":"الموقع على الخريطة",
+    "newaddress":"اضافة عنوان",
+    "default": "عنوان اساسي",
+    "delete": "حذف",
+    "deliverhere": "توصيل هنا",
+    "saveaddress": "حفظ العنوان"
   }
 }

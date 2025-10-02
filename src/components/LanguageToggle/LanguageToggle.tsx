@@ -19,7 +19,7 @@ export default function LanguageToggle() {
   }
 
   return (
-    <Button variant="outline" onClick={handleClick}>
+    <Button variant="outline" onClick={handleClick} className="cursor-pointer">
       {currentLocale==='en'?"عربي":"en"}
     </Button>
   )

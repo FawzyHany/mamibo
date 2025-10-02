@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import DeliveryMap from "./DeliveryMap";
+import { useTranslations } from "next-intl";
 
 type Props = {
   onConfirm: (lat: number, lng: number) => void;
@@ -34,13 +35,14 @@ const MAX_DISTANCE_KM = 5; // allowed radius
 }
 
 export default function LocationPicker({ onConfirm }: Props) {
+  const t = useTranslations();
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className=" bg-[var(--primary-color2)] cursor-pointer hover:bg-[var(--primary-color2)] hover:text-white my-3 text-white my-3" variant="outline">Deliver Here</Button>
+        <Button className=" bg-[var(--primary-color2)] cursor-pointer hover:bg-[var(--primary-color2)] hover:text-white my-3 text-white my-3" variant="outline"> {t("account.deliverhere")}</Button>
       </DialogTrigger>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
@@ -81,7 +83,7 @@ export default function LocationPicker({ onConfirm }: Props) {
               }
             }}
           >
-            Deliver Here
+            {t("account.deliverhere")}
           </Button>
         </div>
       </DialogContent>
