@@ -1,6 +1,6 @@
 "use client"
 import { useUpdateOrderStatus } from "@/hooks/useOrders"
-import { Order } from "@/generated/prisma"
+import { Order } from '@prisma/client'
 
 export function OrderStatusDropdown({ orderId, currentStatus }: { orderId: string; currentStatus: Order["status"] }) {
   const updateOrder = useUpdateOrderStatus()

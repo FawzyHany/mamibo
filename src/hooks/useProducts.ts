@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { MenuItem } from "@/generated/prisma"
+import { MenuItem } from '@prisma/client'
 
 export function useProducts() {
   return useQuery<MenuItem[]>({

@@ -4,8 +4,8 @@ import {prisma} from "@/lib/prisma";
 import { getOrCreateSessionId } from "@/lib/session";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { Prisma } from "@/generated/prisma";
-import type { Cart } from "@/generated/prisma";
+import { Prisma } from '@prisma/client';
+import type { Cart } from '@prisma/client';
 import { AddToCartRequest } from "@/lib/schemas";
 
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { MenuItem } from "@/generated/prisma"
+import { MenuItem } from '@prisma/client'
 import { useToggleProductAvailability } from "@/hooks/useProducts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"

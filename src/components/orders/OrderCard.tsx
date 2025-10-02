@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Order } from "@/generated/prisma"
+import { Order } from '@prisma/client'
 
 type Props = {
   order: Order

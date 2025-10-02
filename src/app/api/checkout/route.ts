@@ -1,7 +1,7 @@
 // app/api/checkout/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { PaymentType } from "src/generated/prisma";
+import { PaymentType } from '@prisma/client';
 import { checkoutSchema } from "@/lib/schemas";
 
 // Zod schema for checkout POST body
