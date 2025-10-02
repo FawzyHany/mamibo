@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { ProductDetail } from "@/components/ProductDetail/ProductDetail"
 import { AppBreadcrumb } from "@/components/Breadcrumb/Breadcrumb";
 
-type BeverageDetailPageProps = {
+type BeverageDetailPageProps =  {
   params: Promise<{
     locale: string;
     slug: string;

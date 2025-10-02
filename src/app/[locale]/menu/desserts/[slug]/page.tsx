@@ -4,7 +4,7 @@ import { ProductDetail } from "@/components/ProductDetail/ProductDetail"
 import { AppBreadcrumb } from "@/components/Breadcrumb/Breadcrumb";
 
 
-type DessertDetailPageProps = {
+type DessertDetailPageProps =  {
   params: Promise<{
     locale: string;
     slug: string;

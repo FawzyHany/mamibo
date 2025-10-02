@@ -5,15 +5,15 @@ import { AppBreadcrumb } from "@/components/Breadcrumb/Breadcrumb";
 
 
 type PizzaDetailPageProps = {
-  params: {
+  params: Promise<{
     locale: string;
     slug: string;
-  };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  }>;
 }
 
+
 export default async function PizzaDetailPage({ params }: PizzaDetailPageProps) {
-  const { slug } =  params;
+  const { slug } = await params;
   const product = await prisma.menuItem.findFirst({
     where: {
       name: { equals:slug.replace(/-/g, " "), mode: "insensitive" },
