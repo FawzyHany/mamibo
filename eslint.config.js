@@ -37,10 +37,13 @@ export default [
   {
     rules: {
       // Next.js <Link> wrapper rule
-      '@next/next/link-passhref': 'warn',
+      '@next/next/no-html-link-for-pages': 'warn',
 
       // Accessibility rules about raw ' in JSX
-      'jsx-a11y/no-invalid-aria-props': 'warn',
+      'jsx-a11y/aria-props': 'warn', // ✅ Check if ARIA props are valid
+'jsx-a11y/role-supports-aria-props': 'warn', // ✅ Warn if role doesn't support given aria props
+'jsx-a11y/role-has-required-aria-props': 'warn', // ✅ Warn if a role is missing required ARIA props
+
       'jsx-a11y/anchor-is-valid': 'warn',
       // Add any other related jsx-a11y rules here as needed
 
