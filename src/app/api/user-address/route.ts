@@ -6,7 +6,7 @@ import { z } from "zod";
 
 
 // Zod schema for validation
-export const userAddressSchema = z.object({
+ const userAddressSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   phone: z.string(),
@@ -19,7 +19,7 @@ export const userAddressSchema = z.object({
   lng: z.number(),
   isDefault: z.boolean().optional(),
 });
-export type UserAddress = z.infer<typeof userAddressSchema>;
+
 
 // ✅ GET all user addresses
 export async function GET() {
