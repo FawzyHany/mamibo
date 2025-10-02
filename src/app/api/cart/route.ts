@@ -5,7 +5,7 @@ import { getOrCreateSessionId } from "@/lib/session";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Prisma } from '@prisma/client';
-import type { Cart } from '@prisma/client';
+
 import { AddToCartRequest } from "@/lib/schemas";
 
 
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
     
 
     // 🔄 Find or create cart based on userId or sessionId
-    let cart: Cart|null=null;
+    let cart=null;
 
     if (userId) {
       cart = await prisma.cart.findFirst({ where: { userId } });
