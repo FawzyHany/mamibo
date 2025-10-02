@@ -9,6 +9,7 @@ type PizzaDetailPageProps = {
     locale: string;
     slug: string;
   };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 export default async function PizzaDetailPage({ params }: PizzaDetailPageProps) {
