@@ -22,6 +22,32 @@ enum Role {
 }
 
 
+ enum PaymentType {
+  cod
+  card
+}
+
+
+enum Size {
+  Small
+  Medium
+  Large
+}
+
+enum Crust {
+  Regular
+  Stuffed
+}
+
+enum OrderStatus {
+  PREPARING
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+
+
 model User {
   id          String        @id @default(cuid())
   email       String        @unique
@@ -57,11 +83,7 @@ model MenuItem {
   OrderItem OrderItem[]
 }
 
-enum Size {
-  Small
-  Medium
-  Large
-}
+
 
 model MenuItemSize {
   id         String  @id @default(cuid())
@@ -72,10 +94,7 @@ model MenuItemSize {
   OrderItem OrderItem[]
 }
 
-enum Crust {
-  Regular
-  Stuffed
-}
+
 
 model MenuItemCrust {
   id    String  @id @default(cuid())
@@ -127,10 +146,6 @@ model CartItem {
   @@unique([cartId, menuItemId, sizeOptionId, crustOptionId])
 }
 
-enum PaymentType {
-  cod
-  card
-}
 
 model Order {
   id     String  @id @default(cuid())
@@ -195,12 +210,6 @@ model OrderAddress {
   Order     Order[]
 }
 
-enum OrderStatus {
-  PREPARING
-  OUT_FOR_DELIVERY
-  DELIVERED
-  CANCELLED
-}
 
 model UserAddress {
   id     String @id @default(cuid())
