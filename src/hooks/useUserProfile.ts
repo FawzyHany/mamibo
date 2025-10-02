@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { UpdateUserSchema } from "@/app/api/user/route";
+import { UpdateUserSchema } from "@/lib/schemas";
 import z from "zod";
 
 // ----------------------

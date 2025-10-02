@@ -4,6 +4,7 @@ import { z } from "zod";
 import bcrypt from 'bcryptjs';
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { UpdateUserSchema } from "@/lib/schemas";
 
  const userSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -85,11 +86,7 @@ export async function GET() {
 }
 
 // PATCH /api/user/profile
- const UpdateUserSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email"),
-});
+
 
 
 export async function PATCH(req: Request) {
@@ -137,3 +134,5 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
+
+export { UpdateUserSchema };

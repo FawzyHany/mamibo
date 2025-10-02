@@ -1,6 +1,7 @@
 // app/api/checkout/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { PaymentType } from "@prisma/client";
 import { checkoutSchema } from "@/lib/schemas";
 
 // Zod schema for checkout POST body
@@ -49,8 +50,7 @@ export async function POST(req: Request) {
     });
 
    
-    const prismaPaymentType: 'cod' | 'card' = paymentType === 'cod' ? 'cod' : 'card';
-
+    const prismaPaymentType = paymentType === "cod" ? PaymentType.cod : PaymentType.card;
    
     const newOrder = await tx.order.create({
       data: {
