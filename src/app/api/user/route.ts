@@ -135,4 +135,4 @@ export async function PATCH(req: Request) {
   }
 }
 
-export { UpdateUserSchema };
+
