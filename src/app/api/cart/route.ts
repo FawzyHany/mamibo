@@ -1,11 +1,10 @@
 // app/api/cart/route.ts
 import { NextResponse } from "next/server";
 import {prisma} from "@/lib/prisma";
+import { Decimal } from "@prisma/client/runtime/library";
 import { getOrCreateSessionId } from "@/lib/session";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { Prisma } from '@prisma/client';
-
 import { AddToCartRequest } from "@/lib/schemas";
 
 
@@ -140,7 +139,7 @@ export async function POST(req: Request) {
 // -----------------
 
 
-function calculateCartTotals(items: { lineTotal: Prisma.Decimal }[]) {
+function calculateCartTotals(items: { lineTotal: Decimal }[]) {
   const subtotal = items.reduce((sum, item) => {
     return sum + item.lineTotal.toNumber();
   }, 0);
