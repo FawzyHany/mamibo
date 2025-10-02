@@ -85,7 +85,7 @@ export async function GET() {
 }
 
 // PATCH /api/user/profile
-export const UpdateUserSchema = z.object({
+ const UpdateUserSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Invalid email"),
