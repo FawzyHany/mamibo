@@ -19,6 +19,7 @@ export const userAddressSchema = z.object({
   lng: z.number(),
   isDefault: z.boolean().optional(),
 });
+export type UserAddress = z.infer<typeof userAddressSchema>;
 
 // ✅ GET all user addresses
 export async function GET() {
