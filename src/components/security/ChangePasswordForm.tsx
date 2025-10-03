@@ -15,6 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useTranslations } from "next-intl";
 
 const schema = z
   .object({
@@ -34,6 +35,7 @@ const schema = z
 type FormValues = z.infer<typeof schema>;
 
 export default function SecuritySection() {
+  const t = useTranslations();
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
@@ -62,7 +64,7 @@ export default function SecuritySection() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold">Change Password</h2>
+      <h2 className="text-lg font-semibold">{t("account.changepassword")}</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -70,7 +72,7 @@ export default function SecuritySection() {
             name="currentPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Current Password</FormLabel>
+                <FormLabel>{t("account.currentpassword")}</FormLabel>
                 <FormControl>
                   <Input type="password" {...field} />
                 </FormControl>
@@ -84,7 +86,7 @@ export default function SecuritySection() {
             name="newPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>New Password</FormLabel>
+                <FormLabel>{t("account.newpassword")}</FormLabel>
                 <FormControl>
                   <Input type="password" {...field} />
                 </FormControl>
@@ -98,7 +100,7 @@ export default function SecuritySection() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirm New Password</FormLabel>
+                <FormLabel>{t("account.confirmnewpassword")}</FormLabel>
                 <FormControl>
                   <Input type="password" {...field} />
                 </FormControl>
@@ -108,7 +110,7 @@ export default function SecuritySection() {
           />
 
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Updating..." : "Update Password"}
+            {isPending ? "Updating..." : t("account.confirmnewpassword")}
           </Button>
 
           {success && <p className="text-green-600">{success}</p>}

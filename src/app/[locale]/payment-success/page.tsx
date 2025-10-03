@@ -3,13 +3,11 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useCheckout } from "@/hooks/useCheckout"; 
+import { useTranslations } from "next-intl";
 
 
 export default function PaymentSuccessPage() {
-  console.log("🚀 PaymentSuccessPage mounted");
-
- 
-  
+const t =useTranslations();
 
   const checkoutMutation = useCheckout();
   const params = useSearchParams();
@@ -17,14 +15,10 @@ export default function PaymentSuccessPage() {
   const amount = params.get("amount"); // we passed it in return_url
 
   useEffect(() => {
-    console.log("✅ useEffect triggered");
   
     if (!cartId) {
-      console.error("❌ No cartId found in URL");
       return;
     }
-  
-    console.log("🚀 Attempting checkoutMutation with cartId:", cartId);
   
     checkoutMutation.mutate(
       {
@@ -59,11 +53,11 @@ export default function PaymentSuccessPage() {
 
   return (
     <div className="p-10 text-center">
-      <h1 className="text-3xl font-bold text-green-600">🎉 Payment Successful!</h1>
-      <p>Amount: ${amount}</p>
+      <h1 className="text-3xl font-bold text-green-600">🎉 {t("account.paymentsuccess")}</h1>
+      <p>{t("account.amount")}: ${amount}</p>
 
       {checkoutMutation.isPending && <p>Placing your order...</p>}
-      {checkoutMutation.isSuccess && <p>Your order has been placed ✅</p>}
+      {checkoutMutation.isSuccess && <p>{t("account.orderplaced")} ✅</p>}
       {checkoutMutation.isError && <p className="text-red-500">Error creating order.</p>}
     </div>
   );

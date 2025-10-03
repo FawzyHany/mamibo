@@ -2,6 +2,8 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useOrder } from "@/hooks/useOrders"
+import { useTranslations } from "next-intl"
+import { format } from 'date-fns';
 
 type Props = {
   orderId: string
@@ -10,12 +12,12 @@ type Props = {
 
 export  function OrderDetailsDialog({ orderId, onClose }: Props) {
   const { data: order, isLoading, error } = useOrder(orderId)
-
+const t =useTranslations();
   return (
     <Dialog open={!!orderId} onOpenChange={onClose}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Order Details</DialogTitle>
+          <DialogTitle>{t("account.orderdetails")}</DialogTitle>
         </DialogHeader>
 
         {isLoading && <p>Loading...</p>}
@@ -23,20 +25,21 @@ export  function OrderDetailsDialog({ orderId, onClose }: Props) {
         {order && (
           <div className="space-y-4">
             <div>
-              <p className="font-medium">Order #{order.id}</p>
-              <p>Status: {order.status}</p>
-              <p>Total: ${order.total.toString()}</p>
+              <p className="font-medium">{t("account.order")} #{order.id}</p>
+              <p>{t("account.status")}: {order.status}</p>
+              <p>{t("account.total")}: ${order.total.toString()}</p>
+              <p>{t("account.date")}: {format(new Date(order.createdAt), 'yyyy-MM-dd HH:mm')}</p>
             </div>
 
             <div>
-              <h4 className="font-semibold">Delivery Address</h4>
+              <h4 className="font-semibold">{t("account.location")}</h4>
               <p>{order.address.address}</p>
-              <p>{order.address.building}, Floor {order.address.floor}, Flat {order.address.flat}</p>
+              <p>{order.address.building}, {t("account.floor")} {order.address.floor}, {t("account.flat")} {order.address.flat}</p>
               <p>{order.address.landmark}</p>
             </div>
 
             <div>
-              <h4 className="font-semibold">Items</h4>
+              <h4 className="font-semibold">{t("account.orders")}</h4>
               <ul className="list-disc pl-5">
                 {order.items.map((item) => (
                   <li key={item.id}>
@@ -47,9 +50,9 @@ export  function OrderDetailsDialog({ orderId, onClose }: Props) {
             </div>
 
             <div>
-              <h4 className="font-semibold">Payment</h4>
-              <p>Type: {order.paymentType}</p>
-              <p>Paid: {order.paid ? "Yes" : "No"}</p>
+              <h4 className="font-semibold">{t("account.type")}</h4>
+             
+              <p>{t("account.paid")}: {order.paymentType==="card" ? t("account.visa") : t("account.ondelivey")}</p>
             </div>
           </div>
         )}

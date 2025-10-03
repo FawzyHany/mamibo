@@ -11,7 +11,7 @@ export const LogoAr = () => {
   const locale = useLocale();
 
   return (
-    <a href={`/${locale}`} >
+
       <div className="flex items-center space-x-2 rtl:space-x-reverse">
         <Image
           src={mainLogo}
@@ -25,6 +25,6 @@ export const LogoAr = () => {
           ماميبوا
         </h1>
       </div>
-    </a>
+  
   );
 };

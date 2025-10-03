@@ -19,6 +19,7 @@ import { useSession } from "next-auth/react";
 import { useUserAddresses } from "@/hooks/useUserAddress";
 import Link from "next/link";
 import PaymentForm from "@/components/PaymentForm/PaymentForm"
+import { useTranslations } from "next-intl"
 
 
 
@@ -43,7 +44,7 @@ type CheckoutFormValues = z.infer<typeof checkoutSchema>
 
 
 export default function CheckoutPage() {
-
+const t = useTranslations();
   const { data: session } = useSession();
 const isLoggedIn = !!session?.user;
 
@@ -155,7 +156,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
       {isLoggedIn ? (
   <Card>
   <CardHeader>
-    <CardTitle>Customer Information</CardTitle>
+    <CardTitle>{t("account.customerinformation")}</CardTitle>
   </CardHeader>
   <CardContent>
     {addressesLoading ? (
@@ -173,14 +174,14 @@ const defaultAddress = addresses.find((a) => a.isDefault);
               {defaultAddress.phone}
               <br />
               {/* {defaultAddress.email}<br /> */}
-              {defaultAddress.address}, Building {defaultAddress.building}, Floor {defaultAddress.floor}, Flat {defaultAddress.flat}
+              {defaultAddress.address}, {t("account.building")} {defaultAddress.building}, {t("account.floor")} {defaultAddress.floor}, {t("account.flat")} {defaultAddress.flat}
               <br />
               {defaultAddress.landmark}
             </p>
             <p className="text-sm text-muted-foreground">
-              Using your default address. Update it in{" "}
+            {t("account.changeaddress")} {" "}
               <Link href="/account" className="underline">
-                your account
+              {t("navbar.myaccount")}
               </Link>.
             </p>
           </div>
@@ -201,7 +202,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
                   name="paymentType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Payment Method</FormLabel>
+                      <FormLabel>{t("account.type")}</FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -210,11 +211,11 @@ const defaultAddress = addresses.find((a) => a.isDefault);
                         >
                           <div className="flex items-center space-x-2">
                             <RadioGroupItem value="cod" id="cod" />
-                            <Label htmlFor="cod">Cash on Delivery</Label>
+                            <Label htmlFor="cod">{t("account.ondelivey")}</Label>
                           </div>
                           <div className="flex items-center space-x-2">
                             <RadioGroupItem value="card" id="card" />
-                            <Label htmlFor="card">Card</Label>
+                            <Label htmlFor="card">{t("account.visa")}</Label>
                           </div>
                         </RadioGroup>
                       </FormControl>
@@ -234,9 +235,9 @@ const defaultAddress = addresses.find((a) => a.isDefault);
     ) : (
       // ❌ User has no address saved
       <div>
-        <p className="text-sm mb-2">You haven’t added a delivery address yet.</p>
+        <p className="text-sm mb-2">{t("account.addaddress")}</p>
         <Link href="/account/addresses">
-          <Button className="cursor-pointer" variant="outline">Add Address</Button>
+          <Button className="cursor-pointer" variant="outline">{t("account.addaddresslink")}</Button>
         </Link>
       </div>
     )}
@@ -251,7 +252,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
 
       <Card>
         <CardHeader>
-          <CardTitle>Customer Information</CardTitle>
+          <CardTitle>{t("account.customerinformation")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -264,7 +265,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>First Name</FormLabel>
+                      <FormLabel>{t("ContactUsForm.firstname")}</FormLabel>
                       <FormControl>
                         <Input placeholder="John" {...field} />
                       </FormControl>
@@ -277,7 +278,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
                   name="lastName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Last Name</FormLabel>
+                      <FormLabel>{t("ContactUsForm.lastname")}</FormLabel>
                       <FormControl>
                         <Input placeholder="Doe" {...field} />
                       </FormControl>
@@ -290,7 +291,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone</FormLabel>
+                      <FormLabel>{t("ContactUsForm.phone")}</FormLabel>
                       <FormControl>
                         <Input placeholder="+20 100 000 0000" {...field} />
                       </FormControl>
@@ -303,7 +304,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email (optional)</FormLabel>
+                      <FormLabel>{t("ContactUsForm.email")} ({t("account.optional")})</FormLabel>
                       <FormControl>
                         <Input type="email" placeholder="john@example.com" {...field} />
                       </FormControl>
@@ -315,7 +316,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
 
 
               <div>
-  <FormLabel>Delivery Location</FormLabel>
+  <FormLabel>{t("account.location")}</FormLabel>
   <LocationPicker
     onConfirm={(lat, lng) => {
       form.setValue("lat", lat);
@@ -343,7 +344,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
                   name="address"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address</FormLabel>
+                      <FormLabel>{t("account.address")}</FormLabel>
                       <FormControl>
                         <Input placeholder="123 Main St" {...field} />
                       </FormControl>
@@ -357,7 +358,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
                     name="building"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Building</FormLabel>
+                        <FormLabel>{t("account.building")}</FormLabel>
                         <FormControl>
                           <Input placeholder="10B" {...field} />
                         </FormControl>
@@ -370,7 +371,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
                     name="floor"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Floor</FormLabel>
+                        <FormLabel>{t("account.floor")}</FormLabel>
                         <FormControl>
                           <Input placeholder="2" {...field} />
                         </FormControl>
@@ -385,7 +386,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
                     name="flat"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Flat</FormLabel>
+                        <FormLabel>{t("account.flat")}</FormLabel>
                         <FormControl>
                           <Input placeholder="12A" {...field} />
                         </FormControl>
@@ -398,7 +399,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
                     name="landmark"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Landmark</FormLabel>
+                        <FormLabel>{t("account.landmark")}</FormLabel>
                         <FormControl>
                           <Input placeholder="Near mall" {...field} />
                         </FormControl>
@@ -416,7 +417,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
                   name="paymentType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Payment Method</FormLabel>
+                      <FormLabel>{t("account.type")}</FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -425,11 +426,11 @@ const defaultAddress = addresses.find((a) => a.isDefault);
                         >
                           <div className="flex items-center space-x-2">
                             <RadioGroupItem value="cod" id="cod" />
-                            <Label htmlFor="cod">Cash on Delivery</Label>
+                            <Label htmlFor="cod">{t("account.ondelivery")}</Label>
                           </div>
                           <div className="flex items-center space-x-2">
                             <RadioGroupItem value="card" id="card" />
-                            <Label htmlFor="card">Card</Label>
+                            <Label htmlFor="card">{t("account.visa")}</Label>
                           </div>
                         </RadioGroup>
                       </FormControl>
@@ -463,7 +464,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
       {/* Right Column - Order Summary */}
       <Card>
         <CardHeader>
-          <CardTitle>Order Summary</CardTitle>
+          <CardTitle>{t("account.ordersummary")}</CardTitle>
         </CardHeader>
         <CardContent>
           {cart?.items.length ? (
@@ -490,21 +491,21 @@ const defaultAddress = addresses.find((a) => a.isDefault);
 
               <div className="border-t pt-4 space-y-2">
                 <div className="flex justify-between">
-                  <span>Subtotal</span>
+                  <span>{t("account.subtotal")}</span>
                   <span>${cart.subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Tax</span>
+                  <span>{t("account.tax")}</span>
                   <span>${cart.tax.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between font-bold">
-                  <span>Total</span>
+                  <span>{t("account.total")}</span>
                   <span>${cart.total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
           ) : (
-            <p>Your cart is empty.</p>
+            <p>{t("navbar.cartempty")}.</p>
           )}
         </CardContent>
       </Card>

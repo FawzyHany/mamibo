@@ -1,13 +1,16 @@
 import { useOrders } from '@/hooks/useOrders';
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { OrderCard } from '../orders/OrderCard';
-import { OrderDetailsDialog } from '../orders/OrderDetailsDialog';
-import ChangePasswordForm from '../security/ChangePasswordForm';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { OrderCard } from '@/components/orders/OrderCard';
+import { OrderDetailsDialog } from '@/components/orders/OrderDetailsDialog';
+import ChangePasswordForm from '@/components/security/ChangePasswordForm';
+import { useTranslations } from 'next-intl';
 
 export const OrdersSection = () => {
+
   const { data: orders, isLoading, error } = useOrders();
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
+
 
   if (isLoading) return <p>Loading orders...</p>
   if (error) return <p className="text-red-500">Failed to load orders</p>
@@ -41,10 +44,11 @@ export const OrdersSection = () => {
   )
 }
 export function SecuritySection() {
+  const t = useTranslations();
   return (
     <Card className="shadow-md">
       <CardHeader>
-        <CardTitle>Security</CardTitle>
+        <CardTitle>{t("account.password")}</CardTitle>
       </CardHeader>
       <CardContent>
         <ChangePasswordForm />

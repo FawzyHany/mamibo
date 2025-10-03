@@ -57,7 +57,34 @@
     "default": "Default Address",
     "delete": "Delete",
     "deliverhere": "Deliver Here",
-    "saveaddress": "Save Address"
+    "saveaddress": "Save Address",
+    "status": "Status",
+    "date": "Date",
+    "details": "View Details",
+    "total": "Total",
+    "type": "Payment Type",
+    "ondelivey": "Cash On Delivery",
+    "visa": "Visa",
+    "orderdetails": "Order Details",
+    "order": "Order",
+    "paid": "Paid",
+    "changepassword": "Change Password",
+    "currentpassword": "Current Password",
+    "newpassword": "New Password",
+    "confirmnewpassword":"Confirm New Password",
+    "updatepassword":"Update Password",
+    "customerinformation": "Customer Information",
+    "changeaddress": "Change your Address",
+    "addaddress": "You haven’t added a delivery address yet.",
+    "addaddresslink": "Add Address",
+    "optional": "Optional",
+    "ordersummary": "Order Summary",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "paymentsuccess": "Payment Successful!",
+    "orderplaced": "Your order has been placed",
+    "amount": "Amount"
+    
   }
  
 }
