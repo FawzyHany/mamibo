@@ -54,8 +54,7 @@ const t =useTranslations();
   return (
     <div className="p-10 text-center">
       <h1 className="text-3xl font-bold text-green-600">🎉 {t("account.paymentsuccess")}</h1>
-      <p>{t("account.amount")}: ${amount}</p>
-
+      {amount? <p>{t("account.amount")}: ${amount}</p>:""}
       {checkoutMutation.isPending && <p>Placing your order...</p>}
       {checkoutMutation.isSuccess && <p>{t("account.orderplaced")} ✅</p>}
       {checkoutMutation.isError && <p className="text-red-500">Error creating order.</p>}
