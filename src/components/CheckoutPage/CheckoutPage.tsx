@@ -68,13 +68,13 @@ const CheckoutPage = () => {
     const lng = form.getValues("lng") ?? 0;
 
     console.log("⚡ Calling stripe.confirmPayment with clientSecret:", clientSecret);
-
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     // Only Stripe confirm + return_url
     const { error } = await stripe.confirmPayment({
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `http://localhost:3000/payment-success?amount=${amount}&cartId=${cart?.id}&firstName=${encodeURIComponent(firstName)}&lastName=${encodeURIComponent(lastName)}&phone=${encodeURIComponent(phone)}&email=${encodeURIComponent(email)}&address=${encodeURIComponent(address)}&building=${encodeURIComponent(building)}&floor=${encodeURIComponent(floor)}&flat=${encodeURIComponent(flat)}&landmark=${encodeURIComponent(landmark)}&lat=${lat}&lng=${lng}`,
+        return_url: `${baseUrl}/payment-success?amount=${amount}&cartId=${cart?.id}&firstName=${encodeURIComponent(firstName)}&lastName=${encodeURIComponent(lastName)}&phone=${encodeURIComponent(phone)}&email=${encodeURIComponent(email)}&address=${encodeURIComponent(address)}&building=${encodeURIComponent(building)}&floor=${encodeURIComponent(floor)}&flat=${encodeURIComponent(flat)}&landmark=${encodeURIComponent(landmark)}&lat=${lat}&lng=${lng}`,
       },
     });
 
