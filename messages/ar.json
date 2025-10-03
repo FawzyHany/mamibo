@@ -85,6 +85,7 @@
     "tax": "الضرائب",
     "paymentsuccess": "تم دفع الطلب بنجاح",
     "orderplaced": "تم انشاء الطلب",
-    "amount": "الكمية"
+    "amount": "الكمية",
+    "placeorder": "انشاء الطلب"
   }
 }

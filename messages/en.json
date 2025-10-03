@@ -83,7 +83,8 @@
     "tax": "Tax",
     "paymentsuccess": "Payment Successful!",
     "orderplaced": "Your order has been placed",
-    "amount": "Amount"
+    "amount": "Amount",
+    "placeorder": "Place Order"
     
   }
  

@@ -20,6 +20,7 @@ import { useUserAddresses } from "@/hooks/useUserAddress";
 import Link from "next/link";
 import PaymentForm from "@/components/PaymentForm/PaymentForm"
 import { useTranslations } from "next-intl"
+import { useRouter } from "next/router"
 
 
 
@@ -44,6 +45,7 @@ type CheckoutFormValues = z.infer<typeof checkoutSchema>
 
 
 export default function CheckoutPage() {
+  
 const t = useTranslations();
   const { data: session } = useSession();
 const isLoggedIn = !!session?.user;
@@ -54,6 +56,14 @@ const defaultAddress = addresses.find((a) => a.isDefault);
 
   const { data: cart, isLoading } = useCart();
   const checkoutMutation = useCheckout();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (checkoutMutation.status === 'success') {
+      router.push('/payment-success');
+    }
+  }, [checkoutMutation.status, router]);
   // 2. Init form
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
@@ -426,7 +436,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
                         >
                           <div className="flex items-center space-x-2">
                             <RadioGroupItem value="cod" id="cod" />
-                            <Label htmlFor="cod">{t("account.ondelivery")}</Label>
+                            <Label htmlFor="cod">{t("account.ondelivey")}</Label>
                           </div>
                           <div className="flex items-center space-x-2">
                             <RadioGroupItem value="card" id="card" />
@@ -448,7 +458,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
     className="w-full cursor-pointer"
     disabled={checkoutMutation.status === "pending"}
   >
-    {checkoutMutation.status === "pending" ? "Placing order..." : "Place Order"}
+    {checkoutMutation.status === "pending" ? "Placing order..." : t("account.placeorder")}
   </Button>)}
 
 
