@@ -10,10 +10,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+  //  url       = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
 }
-
 
 enum Role {
   USER
@@ -21,12 +23,10 @@ enum Role {
   ADMIN
 }
 
-
- enum PaymentType {
+enum PaymentType {
   cod
   card
 }
-
 
 enum Size {
   Small
@@ -46,21 +46,18 @@ enum OrderStatus {
   CANCELLED
 }
 
-
-
 model User {
   id          String        @id @default(cuid())
   email       String        @unique
   firstName   String
   lastName    String? // optional
   password    String
-  role        Role     @default(USER)
+  role        Role          @default(USER)
   createdAt   DateTime      @default(now())
   updateAt    DateTime      @updatedAt
   Cart        Cart[]
   Order       Order[]
   UserAddress UserAddress[]
-
 }
 
 model Category {
@@ -83,8 +80,6 @@ model MenuItem {
   OrderItem OrderItem[]
 }
 
-
-
 model MenuItemSize {
   id         String  @id @default(cuid())
   size       Size // Small, Medium, Large
@@ -93,8 +88,6 @@ model MenuItemSize {
   CartItem  CartItem[]
   OrderItem OrderItem[]
 }
-
-
 
 model MenuItemCrust {
   id    String  @id @default(cuid())
@@ -145,7 +138,6 @@ model CartItem {
 
   @@unique([cartId, menuItemId, sizeOptionId, crustOptionId])
 }
-
 
 model Order {
   id     String  @id @default(cuid())
@@ -210,7 +202,6 @@ model OrderAddress {
   Order     Order[]
 }
 
-
 model UserAddress {
   id     String @id @default(cuid())
   user   User   @relation(fields: [userId], references: [id])
@@ -246,4 +237,3 @@ model Contact {
   message   String
   createdAt DateTime @default(now())
 }
-

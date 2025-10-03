@@ -66,48 +66,61 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // ✅ Validate with Zod
+    // ✅ Validate request body using Zod
     const body = await req.json();
-const result = userAddressSchema.safeParse(body);
+    const result = userAddressSchema.safeParse(body);
 
-if (!result.success) {
-  return NextResponse.json(
-    { error: result.error.flatten() },
-    { status: 400 }
-  );
-}
+    if (!result.success) {
+      return NextResponse.json(
+        { error: result.error.flatten() },
+        { status: 400 }
+      );
+    }
 
-const { isDefault, ...addressData } = result.data;
+    const { isDefault, ...addressData } = result.data;
 
-if (isDefault) {
-  const [, address] = await prisma.$transaction([
-    prisma.userAddress.updateMany({
+    // ✅ Check if user already has a default address
+    const hasDefault = await prisma.userAddress.findFirst({
       where: { userId: user.id, isDefault: true },
-      data: { isDefault: false },
-    }),
-    prisma.userAddress.create({
-      data: {
-        ...addressData,
-        isDefault: true,
-        userId: user.id,
-      },
-    }),
-  ]);
+    });
 
-  return NextResponse.json(address, { status: 201 });
-}
+    // ✅ If user wants this as default, or no default exists yet
+    if (isDefault || !hasDefault) {
+      const [, address] = await prisma.$transaction([
+        // Clear any existing default
+        prisma.userAddress.updateMany({
+          where: { userId: user.id, isDefault: true },
+          data: { isDefault: false },
+        }),
+        // Create the new default address
+        prisma.userAddress.create({
+          data: {
+            ...addressData,
+            isDefault: true,
+            userId: user.id,
+          },
+        }),
+      ]);
 
+      return NextResponse.json(address, { status: 201 });
+    }
 
+    // ✅ Create non-default address
     const address = await prisma.userAddress.create({
       data: {
         ...addressData,
+        isDefault: false,
         userId: user.id,
       },
     });
 
     return NextResponse.json(address, { status: 201 });
+
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to create address" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create address" },
+      { status: 500 }
+    );
   }
 }
