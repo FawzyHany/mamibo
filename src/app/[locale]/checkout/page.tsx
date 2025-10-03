@@ -20,7 +20,8 @@ import { useUserAddresses } from "@/hooks/useUserAddress";
 import Link from "next/link";
 import PaymentForm from "@/components/PaymentForm/PaymentForm"
 import { useTranslations } from "next-intl"
-import { useRouter } from "next/router"
+import { useRouter } from 'next/navigation';
+
 
 
 
