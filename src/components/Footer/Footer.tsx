@@ -24,7 +24,7 @@ import Link from "next/link";
             </li>
             <li className="flex items-center gap-2">
               <MapPin className="w-4 h-4" />
-              Via Roma 15, Milano, Italy
+              Via Roma 16, Milano, Italy
             </li>
           </ul>
         </div>
