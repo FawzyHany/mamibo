@@ -20,7 +20,7 @@ import Link from "next/link";
           <ul className="text-sm text-white space-y-2">
             <li className="flex items-center gap-2">
               <Phone className="w-4 h-4" />
-              +39 0123 456 789
+              +39 0123 456 786
             </li>
             <li className="flex items-center gap-2">
               <MapPin className="w-4 h-4" />
