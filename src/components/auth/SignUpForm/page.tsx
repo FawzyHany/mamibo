@@ -16,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -43,6 +45,13 @@ export default function SignupForm() {
   });
 
   const signup = useSignup();
+  const router = useRouter();
+
+useEffect(() => {
+  if (signup.isSuccess) {
+    router.push("/login?success=1"); // add query param here
+  }
+}, [signup.isSuccess, router]);
 
   function onSubmit(values: FormValues) {
     signup.mutate(values);

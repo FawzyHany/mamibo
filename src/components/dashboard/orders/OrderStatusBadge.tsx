@@ -1,3 +1,4 @@
+
 export function OrderStatusBadge({ status }: { status: string }) {
   const colorMap: Record<string, string> = {
     PREPARING: "bg-yellow-200 text-yellow-800",

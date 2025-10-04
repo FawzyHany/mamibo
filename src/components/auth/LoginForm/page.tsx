@@ -32,6 +32,7 @@ export default function LoginForm() {
 
   const searchParams = useSearchParams()
   const error = searchParams.get("error")
+  const success = searchParams.get("success");
   
   useEffect(() => {
     if (error === "CredentialsSignin") {
@@ -50,29 +51,27 @@ export default function LoginForm() {
 
   const loginMutation = useMutation({
     mutationFn: async (values: LoginFormValues) => {
-      console.log("👈Calling signIn with credentials..."); // 👈 New log
+
       const res = await signIn("credentials", {
         redirect: false,
         email: values.email,
         password: values.password,
       });
-      console.log("👈Response from signIn:", res); // 👈 New log
+   
 
       if (res?.error) {
-        console.log("👈signIn returned an error:", res.error); // 👈 New log
-        // Next-Auth returns a generic 'CredentialsSignin' error for invalid credentials
-        // Use a more user-friendly message
+      
         throw new Error("Invalid email or password");
       }
-      console.log("👈signIn was successful."); // 👈 New log
+
       return res;
     },
     onSuccess: () => {
-      console.log("👈Mutation successful. Redirecting..."); // 👈 New log
+   
       router.push("/");
     },
     onError: (err: Error) => {
-      console.log("👈Mutation failed. Handling error locally:", err.message); // 👈 New log
+ 
       // The error message from the mutationFn is used here
       setFormError(err.message);
       console.error("Login failed:", err.message);
@@ -86,7 +85,16 @@ export default function LoginForm() {
 
   return (
     <div className="flex justify-center items-center my-5">
+     
       <Card className="w-full max-w-md">
+      <div className="px-3">
+      {success === "1" && (
+        <p className="text-green-600 mb-4">
+          Account created successfully, please log in.
+        </p>
+      )}
+      {/* Your login form here */}
+    </div>
         <CardHeader>
           <CardTitle>Login</CardTitle>
         </CardHeader>

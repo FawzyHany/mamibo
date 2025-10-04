@@ -6,6 +6,7 @@
 
 // To intialize new prisma setup
 //npx prisma generate
+// npx prisma db push
 
 // npx prisma studio
 

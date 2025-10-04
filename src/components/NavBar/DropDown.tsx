@@ -16,12 +16,17 @@ import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-export const DropDownNavBar = () => {
-  const t = useTranslations();
-  const { data: session, status } = useSession();
 
+
+export  const DropDownNavBar = () => {
+
+   const t = useTranslations();
+  const { data: session, status } = useSession();
+ 
   const isLoading = status === "loading";
   const isAuthenticated = !!session?.user?.email;
+
+
 
   return (
     <DropdownMenu>
@@ -36,7 +41,9 @@ export const DropDownNavBar = () => {
             : isAuthenticated
             ? t("navbar.myaccount")
             : t("navbar.account")}
+            
         </DropdownMenuLabel>
+       
         <DropdownMenuSeparator />
 
         {isAuthenticated ? (
@@ -69,6 +76,7 @@ export const DropDownNavBar = () => {
                 {t("navbar.signup")}
               </Link>
             </DropdownMenuItem>
+            
           </>
         )}
       </DropdownMenuContent>

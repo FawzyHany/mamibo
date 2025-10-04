@@ -20,6 +20,7 @@ import { useLocale } from 'next-intl';
 import Link from "next/link";
 
 
+
 export function NavigationMenuDemo() {
   const categories = [
     { key: "navbar.pizza", href: "/menu/pizza" },

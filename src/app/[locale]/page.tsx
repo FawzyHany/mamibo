@@ -9,12 +9,17 @@ import serviceImg from '../../../public/ServiceImg/serviceBackground.jpeg'
 import { Truck, Utensils } from 'lucide-react';
 import ContactForm from "@/components/ContactForm/ContactForm";
 import { useTranslations } from "next-intl";
+import { DashboardButton } from "@/components/dashboard/DashboardButton";
+
 
 export default function Home() {
   const t = useTranslations();
   return (
     <>
     <main className="mt-10">
+    <div>
+      <DashboardButton />
+    </div>
     <CarouselHome/>
 
 <div className="w-full bg-gray-200">
