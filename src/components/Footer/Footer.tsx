@@ -47,6 +47,7 @@ import Link from "next/link";
       {/* Bottom Bar */}
       <div className="mt-8 text-center text-sm text-gray-700">
         © {new Date().getFullYear()} Mamibo Ristorante. All rights reserved.
+        
       </div>
     </footer>
   );

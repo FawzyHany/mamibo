@@ -247,7 +247,7 @@ const defaultAddress = addresses.find((a) => a.isDefault);
       // ❌ User has no address saved
       <div>
         <p className="text-sm mb-2">{t("account.addaddress")}</p>
-        <Link href="/account/addresses">
+        <Link href="/account">
           <Button className="cursor-pointer" variant="outline">{t("account.addaddresslink")}</Button>
         </Link>
       </div>
