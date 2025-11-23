@@ -49,7 +49,7 @@ export default function SignupForm() {
 
 useEffect(() => {
   if (signup.isSuccess) {
-    router.push("/login?success=1"); // add query param here
+    router.push("/login"); // add query param here
   }
 }, [signup.isSuccess, router]);
 
